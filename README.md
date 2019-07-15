@@ -29,3 +29,7 @@ Install VSCode direnv extension: https://marketplace.visualstudio.com/items?item
 
 ## Testing:
 * `$ make test`
+
+## View generated swagger docs:
+* `$ go run main.go`
+* Open browser at `http://localhost:8000/openapi-ui`

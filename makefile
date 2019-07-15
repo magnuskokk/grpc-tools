@@ -1,8 +1,3 @@
-# Setup the dev environment.
-.PHONY: setup
-setup:
-	@setup
-
 # Generate gRPC server and client, HTTP REST API server, validators and swagger docs.
 .PHONY: protoc
 protoc:
@@ -18,9 +13,6 @@ generate: protoc
 statik:
 	@statik -m -f -src swagger/
 
+.PHONY: test
 test:
 	@go test -v ./...
-
-opendoc:
-	@go run main.go
-	@xdg-open localhost:8000/openapi-ui
