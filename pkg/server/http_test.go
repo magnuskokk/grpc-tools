@@ -1,4 +1,4 @@
-package heartbeat_test
+package server_test
 
 import (
 	"context"
@@ -13,8 +13,8 @@ import (
 
 	"grpc-tools/pkg/testing"
 
-	"grpc-tools/services/heartbeat"
-	"grpc-tools/services/heartbeat/mocks"
+	"grpc-tools/pkg/server"
+	"grpc-tools/pkg/server/mocks"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -29,8 +29,8 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		mockCtrl          *gomock.Controller
 		mockServiceServer *mocks.MockHeartbeatServiceServer
 
-		server    *httptest.Server
-		testReply *heartbeat.PingReply
+		testServer *httptest.Server
+		testReply  *server.PingReply
 	)
 
 	BeforeEach(func() {
@@ -44,7 +44,7 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 
 		go func() {
 			register := func(s *grpc.Server) {
-				heartbeat.RegisterHeartbeatServiceServer(s, mockServiceServer)
+				server.RegisterHeartbeatServiceServer(s, mockServiceServer)
 			}
 			if err := testing.StartGRPCTestServer(ctx, buf, register); err != nil {
 				log.Fatal(err)
@@ -52,10 +52,10 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		}()
 
 		var err error
-		server, err = testing.NewGatewayTestServer(ctx, buf, heartbeat.RegisterHeartbeatServiceHandlerFromEndpoint)
+		testServer, err = testing.NewGatewayTestServer(ctx, buf, server.RegisterHeartbeatServiceHandlerFromEndpoint)
 		Expect(err).To(BeNil())
 
-		testReply = &heartbeat.PingReply{
+		testReply = &server.PingReply{
 			Message: []byte("test"),
 		}
 	})
@@ -71,12 +71,12 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 				mockServiceServer.EXPECT().
 					Ping(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
+						gomock.AssignableToTypeOf(&server.PingRequest{})).
 					Return(testReply, nil)
 			})
 
 			It("returns test reply", func() {
-				res, err := http.Get(server.URL + "/ping")
+				res, err := http.Get(testServer.URL + "/ping")
 				Expect(err).To(BeNil())
 
 				Expect(res.StatusCode).To(Equal(http.StatusOK))
@@ -101,12 +101,12 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 				mockServiceServer.EXPECT().
 					Ping(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
+						gomock.AssignableToTypeOf(&server.PingRequest{})).
 					Return(nil, errors.New("service error"))
 			})
 
 			It("returns error", func() {
-				res, err := http.Get(server.URL + "/ping")
+				res, err := http.Get(testServer.URL + "/ping")
 				Expect(err).To(BeNil())
 
 				Expect(res.StatusCode).To(Equal(http.StatusInternalServerError))

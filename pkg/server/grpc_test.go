@@ -1,4 +1,4 @@
-package heartbeat_test
+package server_test
 
 import (
 	"context"
@@ -6,10 +6,10 @@ import (
 
 	"github.com/golang/mock/gomock"
 
+	"grpc-tools/pkg/server"
 	"grpc-tools/pkg/testing"
 
-	"grpc-tools/services/heartbeat"
-	"grpc-tools/services/heartbeat/mocks"
+	"grpc-tools/pkg/server/mocks"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -24,8 +24,8 @@ var _ = Describe("gRPC server and client for heartbeat service", func() {
 		mockCtrl          *gomock.Controller
 		mockServiceServer *mocks.MockHeartbeatServiceServer
 
-		client   heartbeat.HeartbeatServiceClient
-		testPong *heartbeat.PingReply
+		client   server.HeartbeatServiceClient
+		testPong *server.PingReply
 	)
 
 	BeforeEach(func() {
@@ -38,16 +38,16 @@ var _ = Describe("gRPC server and client for heartbeat service", func() {
 		buf := testing.NewBufNet()
 
 		register := func(s *grpc.Server) {
-			heartbeat.RegisterHeartbeatServiceServer(s, mockServiceServer)
+			server.RegisterHeartbeatServiceServer(s, mockServiceServer)
 		}
 		go testing.StartGRPCTestServer(ctx, buf, register)
 
 		newClient := func(c *grpc.ClientConn) interface{} {
-			return heartbeat.NewHeartbeatServiceClient(c)
+			return server.NewHeartbeatServiceClient(c)
 		}
-		client = testing.NewGRPCTestClient(ctx, buf, newClient).(heartbeat.HeartbeatServiceClient)
+		client = testing.NewGRPCTestClient(ctx, buf, newClient).(server.HeartbeatServiceClient)
 
-		testPong = &heartbeat.PingReply{
+		testPong = &server.PingReply{
 			Message: []byte("test"),
 		}
 	})
@@ -63,12 +63,12 @@ var _ = Describe("gRPC server and client for heartbeat service", func() {
 				mockServiceServer.EXPECT().
 					Ping(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
+						gomock.AssignableToTypeOf(&server.PingRequest{})).
 					Return(testPong, nil)
 			})
 
 			It("returns test reply", func() {
-				reply, err := client.Ping(context.TODO(), &heartbeat.PingRequest{})
+				reply, err := client.Ping(context.TODO(), &server.PingRequest{})
 				Expect(reply.Message).To(Equal([]byte("test")))
 				Expect(err).To(BeNil())
 			})
@@ -79,13 +79,13 @@ var _ = Describe("gRPC server and client for heartbeat service", func() {
 				mockServiceServer.EXPECT().
 					Ping(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
+						gomock.AssignableToTypeOf(&server.PingRequest{})).
 					Return(nil, errors.New("service error"))
 			})
 
 			It("returns error", func() {
-				reply, err := client.Ping(context.TODO(), &heartbeat.PingRequest{})
-				Expect(reply).To(BeAssignableToTypeOf(&heartbeat.PingReply{}))
+				reply, err := client.Ping(context.TODO(), &server.PingRequest{})
+				Expect(reply).To(BeAssignableToTypeOf(&server.PingReply{}))
 				Expect(err).NotTo(BeNil())
 			})
 		})
