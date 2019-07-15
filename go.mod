@@ -10,7 +10,6 @@ require (
 	github.com/golang/mock v1.3.1
 	github.com/golang/protobuf v1.3.2
 	github.com/grpc-ecosystem/grpc-gateway v1.9.4
-	github.com/mwitkow/go-proto-validators v0.0.0-20190709101305-c00cd28f239a
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
 	github.com/prometheus/common v0.6.0

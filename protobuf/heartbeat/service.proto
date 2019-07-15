@@ -9,7 +9,6 @@ import "google/protobuf/timestamp.proto";
 //import "google/protobuf/field_mask.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/mwitkow/go-proto-validators/validator.proto";
 
 // A hack to generate into right directory. The default directory is $GOPATH/src.
 option go_package = "services/heartbeat;heartbeat";
@@ -44,14 +43,7 @@ message PingReply {
 }
 
 message StreamRequest {
-  bytes id = 1 [
-    (gogoproto.customname) = "ID",
-    (validator.field) = {
-      length_gt: 0,
-      length_lt: 1000,
-      human_error: "Must have len(id) between 0 and 1000"
-    }
-  ];
+  bytes id = 1;
   google.protobuf.Timestamp create_date = 2 [
     (gogoproto.stdtime) = true
   ];

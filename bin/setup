@@ -19,13 +19,11 @@ echo -e "\033[1;37mInstalling go development dependencies...\033[0m"
 # Need raw sources to include .proto files from $GOPATH/src
 GO111MODULE=off go get -u -v github.com/gogo/googleapis/...
 GO111MODULE=off go get -u -v github.com/grpc-ecosystem/grpc-gateway/...
-GO111MODULE=off go get -u -v github.com/mwitkow/go-proto-validators/...
 
 GO111MODULE=on go get -u -v \
     github.com/gogo/protobuf/protoc-gen-gogo \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
-    github.com/mwitkow/go-proto-validators/protoc-gen-govalidators \
     github.com/rakyll/statik
 
 npm install --prefix $GOPATH -g swagger-ui-dist
