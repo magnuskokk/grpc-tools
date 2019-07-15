@@ -33,11 +33,9 @@ output=./
 
 protoc \
 		-I. \
-		-I./protobuf \
 		-I${GOPATH}/src/ \
 		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
 		-I${GOPATH}/src/github.com/gogo/googleapis/ \
-		-I${GOPATH}/src/github.com/envoyproxy/protoc-gen-validate \
 		--gogo_out=plugins=grpc,\
 Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
 Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,\
