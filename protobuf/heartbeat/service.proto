@@ -12,15 +12,15 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/mwitkow/go-proto-validators/validator.proto";
 
 // A hack to generate into right directory. The default directory is $GOPATH/src.
-option go_package = "../../services/heartbeat;heartbeat";
+option go_package = "services/heartbeat;heartbeat";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   info: {
     version: "1.0";
   };
   external_docs: {
-    url: "https://github.com/gogo/grpc-example";
-    description: "gRPC heartbeat API";
+    url: "https://github.com/magnuskokk/grpc-tools";
+    description: "Example gRPC api";
   }
   schemes: HTTPS;
 };

@@ -28,5 +28,5 @@ GO111MODULE=on go get -u -v \
     github.com/mwitkow/go-proto-validators/protoc-gen-govalidators \
     github.com/rakyll/statik
 
-npm install
-cp -r ./node_modules/swagger-ui-dist/ ./swagger/
+
+npm install --prefix $GOPATH -g swagger-ui-dist

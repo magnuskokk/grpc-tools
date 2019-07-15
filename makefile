@@ -3,7 +3,7 @@
 setup:
 	@setup
 
-# Generate gRPC server and client, HTTP REST API server, validators and swagger.
+# Generate gRPC server and client, HTTP REST API server, validators and swagger docs.
 .PHONY: protoc
 protoc:
 	@protoc-service protobuf/heartbeat/service.proto
@@ -15,9 +15,12 @@ generate: protoc
 
 # Generate static assets for OpenAPI UI.
 .PHONY: statik
-swagger:
-	statik -m -f -src third_party/OpenAPI/
+statik:
+	@statik -m -f -src swagger/
 
 test:
 	@go test -v ./...
 
+opendoc:
+	@go run main.go
+	@xdg-open localhost:8000/openapi-ui
