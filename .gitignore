@@ -1,3 +1,4 @@
 .direnv/
 .idea/
 statik/
+node_modules/

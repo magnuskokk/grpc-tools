@@ -1,5 +1,4 @@
-# Setup the development environment.
-# Setup development environment.
+# Setup the dev environment.
 .PHONY: setup
 setup:
 	@setup

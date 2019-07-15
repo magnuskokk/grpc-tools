@@ -1,0 +1,15 @@
+{
+  "name": "grpc-tools",
+  "version": "1.0.0",
+  "description": "Playground repo for gRPC. Example roughly based on https://github.com/gogo/grpc-example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Magnus Kokk",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "swagger-ui-dist": "^3.23.1"
+  }
+}

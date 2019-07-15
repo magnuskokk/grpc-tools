@@ -27,3 +27,6 @@ GO111MODULE=on go get -u -v \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/mwitkow/go-proto-validators/protoc-gen-govalidators \
     github.com/rakyll/statik
+
+npm install
+cp -r ./node_modules/swagger-ui-dist/ ./swagger/
