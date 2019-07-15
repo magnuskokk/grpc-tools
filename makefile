@@ -22,10 +22,10 @@ generate:
 ################################
 .PHONY: doc
 doc:
-	$(info Generating swagger doc)
+	$(info Generating swagger doc for pkg/server)
 	@mkdir -p ./swagger
 	@cp -r ${GOPATH}/lib/node_modules/swagger-ui-dist/* ./swagger/
-	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/server.swagger.json/g' ./swagger/index.html
+	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/pkg\/server\/service.swagger.json/g' ./swagger/index.html
 	@statik -m -f -src ./swagger
 
 ################################

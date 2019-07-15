@@ -1,5 +1,6 @@
 .direnv/
 .idea/
+mocks/
 swagger/
 statik/
 *.pb.go
