@@ -8,7 +8,7 @@ PROTOC_GEN_GRPC_WEB_VERSION=1.0.5
 mkdir -p $GOPATH
 
 ################################
-# Install protoc and plugins
+# Installi protoc and plugins
 ################################
 echo -e "\033[1;37mInstalling protoc...\033[0m"
 wget -qO- https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip | bsdtar -xvf- -C $GOPATH
@@ -17,34 +17,25 @@ echo -e "\033[1;37mInstalling protoc-gen-grpc-web...\033[0m"
 wget -O $GOPATH/bin/protoc-gen-grpc-web https://github.com/grpc/grpc-web/releases/download/1.0.5/protoc-gen-grpc-web-${PROTOC_GEN_GRPC_WEB_VERSION}-linux-x86_64
 chmod +x $GOPATH/bin/protoc-gen-grpc-web
 
-echo -e "\033[1;37mInstalling protoc related go packages...\033[0m"
+################################
+# Installing go packages
+################################
+echo -e "\033[1;37mInstalling develpopment go packages...\033[0m"
+
 # Install raw sources to include .proto files from $GOPATH/src
-GO111MODULE=off go get -v \
+export GO111MODULE=off
+go get -u -v \
     github.com/gogo/googleapis/... \
     github.com/grpc-ecosystem/grpc-gateway/...
 
 # Install modules with building as usual
-GO111MODULE=on go get --v \
+export GO111MODULE=on
+go get -u -v \
     github.com/gogo/protobuf/protoc-gen-gogo \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
-    github.com/rakyll/statik
-
-################################
-# Install swagger-ui-dist to serve proto documentation
-################################
-echo -e "\033[1;37mInstalling swagger-ui-dist...\033[0m"
-npm install --prefix $GOPATH -g swagger-ui-dist
-
-################################
-# Install gomock and mockgen for testing
-################################
-echo -e "\033[1;37mInstalling gomock and mockgen...\033[0m"
-go get -u -v \
+    github.com/rakyll/statik \
     github.com/golang/mock/gomock \
-    golang.org/x/tools/go/packages
+
+go get -u -v github.com/golang/mock/gomock
 go install github.com/golang/mock/mockgen
-
-
-
-
