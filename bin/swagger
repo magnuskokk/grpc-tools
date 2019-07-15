@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Create swagger dir if not exists
+mkdir -p ./swagger
+
+# Copy the swagger ui dist from node package dir
+cp -r ${GOPATH}/lib/node_modules/swagger-ui-dist/* ./swagger/
+
+# Replace the default example with our own service documentation
+sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/server.swagger.json/g' ./swagger/index.html
+
+# Pack the doc web application into single file
+statik -m -f -src ./swagger

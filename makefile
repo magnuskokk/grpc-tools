@@ -1,3 +1,6 @@
+.PHONY: all
+all: protoc generate doc
+
 ################################
 # Run protoc with preconfigured plugins
 ################################
@@ -21,15 +24,9 @@ generate:
 doc:
 	$(info Generating swagger doc)
 	@mkdir -p ./swagger
-	# Copy swagger-dist-ui
-	@cp -r $GOPATH/lib/node_modules/swagger-ui-dist/* ./swagger/
-	# Replace the default example with our own service.
+	@cp -r ${GOPATH}/lib/node_modules/swagger-ui-dist/* ./swagger/
 	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/server.swagger.json/g' ./swagger/index.html
-	# Generate the statik asset
 	@statik -m -f -src ./swagger
-
-.PHONY: all
-all: clean protoc generate doc
 
 ################################
 # Serve docs at http://localhost:8000/openapi-ui
@@ -53,6 +50,7 @@ test:
 .PHONY: clean
 clean:
 	$(info Deleting all generated files and directories)
-	@find ./pkg -type f -iname "*.pb.go" -exec rm {} \;
-	@find ./pkg -type f -iname "*.pb.gw.go" -exec rm {} \;
+	@find ./pkg -type f -iname "*.pb.go" -delete
+	@find ./pkg -type f -iname "*.pb.gw.go" -delete
+	@find ./pkg -type d -iname "mocks" -exec rm -rf {} +
 	@rm -rf statik swagger

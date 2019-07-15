@@ -52,12 +52,3 @@ Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
 $output \
 		--swagger_out=swagger/ \
 		$1
-
-# Copy swagger-dist-ui
-cp -r $GOPATH/lib/node_modules/swagger-ui-dist/* ./swagger/$(dirname $1)/
-
-# Replace the default example with our own service.
-sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/service.swagger.json/g' ./swagger/$(dirname $1)/index.html
-
-# Generate the statik asset
-statik -m -f -src ./swagger/$(dirname $1)
