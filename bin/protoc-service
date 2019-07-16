@@ -23,7 +23,7 @@ trap "echo ERR trap fired!" ERR
 #
 # proto/example.proto is the location of the protofile we use.
 
-# The first argument must be .proto path. Example: protobuf/heartbeat/service.proto
+# The first argument must be .proto path. Example: pkg/server/service.proto
 
 # Modules whose paths need to be included when generating protos. 
 
@@ -36,7 +36,8 @@ protoc \
 		-I${GOPATH}/src/ \
 		-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
 		-I${GOPATH}/src/github.com/gogo/googleapis/ \
-		--gogo_out=plugins=grpc,\
+		-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
+		--gogoslick_out=plugins=grpc,\
 Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,\
 Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,\
 Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\

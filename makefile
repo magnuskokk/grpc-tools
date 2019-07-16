@@ -42,6 +42,14 @@ test:
 	@go test -count=1 -v ./...
 
 ################################
+# Run all benchmarks
+################################
+.PHONY: bench
+bench:
+	$(info Running all benchmarks)
+	@go test -run=xxx -bench=. ./...
+
+################################
 # Clean up generated files
 ################################
 .PHONY: clean

@@ -5,10 +5,15 @@ trap "echo ERR trap fired!" ERR
 PROTOC_VERSION=3.9.0
 PROTOC_GEN_GRPC_WEB_VERSION=1.0.5
 
+if [ -z ${GOPATH+x} ] || [ $GOPATH != "$PWD/.direnv" ]; then
+    echo "GOPATH is not properly set, exiting."
+    exit 1
+fi
+
 mkdir -p $GOPATH
 
 ################################
-# Installi protoc and plugins
+# Installing protoc and plugins
 ################################
 echo -e "\033[1;37mInstalling protoc...\033[0m"
 wget -qO- https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip | bsdtar -xvf- -C $GOPATH
@@ -20,18 +25,21 @@ chmod +x $GOPATH/bin/protoc-gen-grpc-web
 ################################
 # Installing go packages
 ################################
-echo -e "\033[1;37mInstalling develpopment go packages...\033[0m"
+echo -e "\033[1;37mInstalling development go packages...\033[0m"
 
 # Install raw sources to include .proto files from $GOPATH/src
 export GO111MODULE=off
 go get -u -v \
+    github.com/gogo/protobuf/... \
     github.com/gogo/googleapis/... \
     github.com/grpc-ecosystem/grpc-gateway/...
 
 # Install modules with building as usual
 export GO111MODULE=on
 go get -u -v \
-    github.com/gogo/protobuf/protoc-gen-gogo \
+    github.com/gogo/protobuf/proto \
+    github.com/gogo/protobuf/protoc-gen-gogoslick \
+    github.com/gogo/protobuf/gogoproto \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
     github.com/rakyll/statik \
