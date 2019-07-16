@@ -18,3 +18,8 @@ clean:
 	@find . -type f -iname "*pb_test.go" -delete
 	@find . -type d -name "mocks" -exec rm -rf {} +
 	@rm -f statik/statik.go
+
+.PHONY: docserver
+docserver:
+	$(info - Serving documentation at: http://localhost:8000/openapi-ui)
+	@go run cmd/docserver/main.go

@@ -22,11 +22,6 @@ sudoclean: clean
 	$(info - Force clean with .direnv removal)
 	@sudo rm -rf ./.direnv
 
-.PHONY: docserver
-docserver:
-	$(info - Serving documentation at: http://localhost:8000/openapi-ui)
-	@go run cmd/docserver/main.go
-
 ################################
 # Generate gRPC server and client
 ################################
@@ -112,7 +107,7 @@ generate-doc:
 	@cp -r ${GOPATH}/lib/node_modules/swagger-ui-dist/* ./swagger/
 
 	$(info - Replace the default example with our own service documentation)
-	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/pkg\/server\/service.swagger.json/g' ./swagger/index.html
+	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/serverapp\/pkg\/server\/service.swagger.json/g' ./swagger/index.html
 
 	$(info - Pack the doc web application into single file)
 	@statik -m -f -src ./swagger -dest ./serverapp

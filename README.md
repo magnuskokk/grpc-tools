@@ -23,5 +23,5 @@ Install direnv extension: https://marketplace.visualstudio.com/items?itemName=Ru
 ## Generate API, test and view swagger docs:
 * `$ make`
 * `$ make test` to run all tests.
-* `$ make docserver`
+* `$ cd serverapp; make docserver`
 * Open browser at `http://localhost:8000/openapi-ui`
