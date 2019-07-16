@@ -1,9 +1,5 @@
 .direnv/
 .idea/
-mocks/
 swagger/
+!swagger/pkg
 statik/
-*.pb.go
-*.pb.gw.go
-*pb_test.go
-
