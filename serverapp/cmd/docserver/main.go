@@ -8,7 +8,7 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	// Static files
-	_ "grpc-tools/statik"
+	_ "serverapp/statik"
 )
 
 // serveOpenAPI serves an OpenAPI UI on /openapi-ui/

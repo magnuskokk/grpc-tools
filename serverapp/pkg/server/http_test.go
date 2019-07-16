@@ -11,10 +11,10 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	"grpc-tools/pkg/testing"
+	"serverapp/pkg/testconn"
 
-	"grpc-tools/pkg/server"
-	"grpc-tools/pkg/server/mocks"
+	"serverapp/pkg/server"
+	"serverapp/pkg/server/mocks"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -40,19 +40,19 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		mockCtrl = gomock.NewController(GinkgoT())
 		mockServiceServer = mocks.NewMockHeartbeatServiceServer(mockCtrl)
 
-		buf := testing.NewBufNet()
+		buf := testconn.NewBufNet()
 
 		go func() {
 			register := func(s *grpc.Server) {
 				server.RegisterHeartbeatServiceServer(s, mockServiceServer)
 			}
-			if err := testing.StartGRPCTestServer(ctx, buf, register); err != nil {
+			if err := testconn.StartGRPCTestServer(ctx, buf, register); err != nil {
 				log.Fatal(err)
 			}
 		}()
 
 		var err error
-		testServer, err = testing.NewGatewayTestServer(ctx, buf, server.RegisterHeartbeatServiceHandlerFromEndpoint)
+		testServer, err = testconn.NewGatewayTestServer(ctx, buf, server.RegisterHeartbeatServiceHandlerFromEndpoint)
 		Expect(err).To(BeNil())
 
 		testReply = &server.PingReply{

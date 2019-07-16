@@ -3,16 +3,17 @@ all: generate
 
 .PHONY: generate
 generate: generate-grpc generate-http generate-client generate-doc
-	$(MAKE) -C backend generate
+	$(MAKE) -C serverapp generate
 
 .PHONY: test
 test:
-	$(MAKE) -C backend test
+	$(MAKE) -C mymodule test
+	$(MAKE) -C serverapp test
 
 .PHONY: clean
 clean:
 	$(info - Removing all generated files and directories)
-	$(MAKE) -C backend clean
+	$(MAKE) -C serverapp clean
 	$(MAKE) -C frontend clean
 	@rm -rf swagger
 
@@ -44,8 +45,8 @@ Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,\
 Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
 Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
 Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
-./backend \
-		backend/pkg/server/service.proto
+./serverapp \
+		serverapp/pkg/server/service.proto
 
 ################################
 # Generate HTTP gateway for gRPC server
@@ -65,8 +66,8 @@ Mgoogle/protobuf/duration.proto=github.com/gogo/protobuf/types,\
 Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,\
 Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,\
 Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types:\
-./backend \
-		backend/pkg/server/service.proto
+./serverapp \
+		serverapp/pkg/server/service.proto
 
 ################################
 # Generate frontend client for gRPC server
@@ -84,7 +85,7 @@ generate-client:
 		-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
 		--grpc-web_out=import_style=typescript,mode=grpcwebtext:\
 ./frontend/generated \
-		backend/pkg/server/service.proto
+		serverapp/pkg/server/service.proto
 
 ################################
 # Generate swagger doc
@@ -102,7 +103,7 @@ generate-doc:
 		-I${GOPATH}/src/github.com/gogo/googleapis/ \
 		-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
 		--swagger_out=logtostderr=true:swagger/ \
-		backend/pkg/server/service.proto
+		serverapp/pkg/server/service.proto
 
 	$(info - Install swagger-ui-dist static files)
 	@npm install --prefix ${GOPATH} -g swagger-ui-dist
@@ -114,4 +115,4 @@ generate-doc:
 	@sed -i -e 's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/openapi-ui\/pkg\/server\/service.swagger.json/g' ./swagger/index.html
 
 	$(info - Pack the doc web application into single file)
-	@statik -m -f -src ./swagger -dest ./backend
+	@statik -m -f -src ./swagger -dest ./serverapp

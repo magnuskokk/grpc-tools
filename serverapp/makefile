@@ -1,16 +1,13 @@
 .PHONY: generate
 generate:
-	$(info - Running //go:generate directives) 
 	@go generate -x ./...
 
 .PHONY: test
 test:
-	$(info - Running all go tests)
 	@go test -count=1 -v ./...
 
 .PHONY: bench
 bench:
-	$(info - Running all go benchmarks)
 	@go test -run=xxx -bench=. ./...
 
 .PHONY: clean
