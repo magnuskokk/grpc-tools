@@ -6,5 +6,4 @@ require (
 	github.com/gogo/protobuf v1.2.1 // indirect
 	github.com/golang/mock v1.3.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.9.4 // indirect
-	github.com/rakyll/statik v0.1.6 // indirect
 )
