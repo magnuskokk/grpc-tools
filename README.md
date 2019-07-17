@@ -31,4 +31,4 @@ More options available in makefiles.
 * `$ make run-heartbeat-server`
 * `$ make run-docserver`
 
-* Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should returns the same message as a response.
+* Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should return the same message as a response.
