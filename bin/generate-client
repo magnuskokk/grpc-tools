@@ -1,0 +1,12 @@
+#!/bin/bash
+
+mkdir -p ${REPO_ROOT}/frontend/generated
+protoc \
+	-I${REPO_ROOT} \
+	-I${GOPATH}/src/ \
+	-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
+	-I${GOPATH}/src/github.com/gogo/googleapis/ \
+	-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
+	--grpc-web_out=import_style=typescript,mode=grpcwebtext:\
+${REPO_ROOT}/frontend/generated \
+	${REPO_ROOT}/protobuf/services/heartbeat/service.proto

@@ -14,6 +14,37 @@
     "application/json"
   ],
   "paths": {
+    "/echo": {
+      "get": {
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/heartbeatEchoRequest"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "ID",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "Message",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    },
     "/ping": {
       "get": {
         "operationId": "Ping",
@@ -68,6 +99,18 @@
     }
   },
   "definitions": {
+    "heartbeatEchoRequest": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "Message": {
+          "type": "string"
+        }
+      }
+    },
     "heartbeatPingReply": {
       "type": "object",
       "properties": {

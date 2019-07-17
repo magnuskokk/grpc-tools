@@ -34,6 +34,21 @@ func (m *MockServiceServer) EXPECT() *MockServiceServerMockRecorder {
 	return m.recorder
 }
 
+// Echo mocks base method
+func (m *MockServiceServer) Echo(arg0 context.Context, arg1 *heartbeat.EchoRequest) (*heartbeat.EchoRequest, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Echo", arg0, arg1)
+	ret0, _ := ret[0].(*heartbeat.EchoRequest)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Echo indicates an expected call of Echo
+func (mr *MockServiceServerMockRecorder) Echo(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Echo", reflect.TypeOf((*MockServiceServer)(nil).Echo), arg0, arg1)
+}
+
 // Ping mocks base method
 func (m *MockServiceServer) Ping(arg0 context.Context, arg1 *heartbeat.PingRequest) (*heartbeat.PingReply, error) {
 	m.ctrl.T.Helper()

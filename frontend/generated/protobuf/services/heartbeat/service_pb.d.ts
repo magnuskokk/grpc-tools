@@ -103,3 +103,25 @@ export namespace StreamPacket {
   }
 }
 
+export class EchoRequest extends jspb.Message {
+  getId(): number;
+  setId(value: number): void;
+
+  getMessage(): string;
+  setMessage(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): EchoRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: EchoRequest): EchoRequest.AsObject;
+  static serializeBinaryToWriter(message: EchoRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): EchoRequest;
+  static deserializeBinaryFromReader(message: EchoRequest, reader: jspb.BinaryReader): EchoRequest;
+}
+
+export namespace EchoRequest {
+  export type AsObject = {
+    id: number,
+    message: string,
+  }
+}
+

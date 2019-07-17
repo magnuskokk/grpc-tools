@@ -40,10 +40,9 @@ go get -v \
 export GO111MODULE=on
 go get -v \
     github.com/gogo/protobuf/proto \
-    github.com/gogo/protobuf/protoc-gen-gogoslick \
     github.com/gogo/protobuf/gogoproto \
+    github.com/gogo/protobuf/protoc-gen-gogoslick \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
-    github.com/golang/mock/gomock \
 
-go install github.com/golang/mock/mockgen
+go install -v github.com/golang/mock/mockgen

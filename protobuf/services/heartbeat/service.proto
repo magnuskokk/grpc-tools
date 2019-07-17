@@ -73,7 +73,18 @@ message StreamPacket {
   bytes sum = 3;
 }
 
+message EchoRequest {
+  uint64 ID = 1;
+  string Message = 2;
+}
+
 service Service {
+  rpc Echo(EchoRequest) returns (EchoRequest) {
+    option (google.api.http) = {
+      get: "/echo"
+    };
+  }
+
   rpc Ping(PingRequest) returns (PingReply) {
     option (google.api.http) = {
         get: "/ping"

@@ -15,6 +15,7 @@ import * as protoc$gen$swagger_options_annotations_pb from '../../../protoc-gen-
 import * as github_com_gogo_protobuf_gogoproto_gogo_pb from '../../../github.com/gogo/protobuf/gogoproto/gogo_pb';
 
 import {
+  EchoRequest,
   PingReply,
   PingRequest,
   StreamPacket,
@@ -37,6 +38,28 @@ export class ServiceClient {
     this.hostname_ = hostname;
     this.credentials_ = credentials;
     this.options_ = options;
+  }
+
+  methodInfoEcho = new grpcWeb.AbstractClientBase.MethodInfo(
+    EchoRequest,
+    (request: EchoRequest) => {
+      return request.serializeBinary();
+    },
+    EchoRequest.deserializeBinary
+  );
+
+  echo(
+    request: EchoRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.Error,
+               response: EchoRequest) => void) {
+    return this.client_.rpcCall(
+      this.hostname_ +
+        '/heartbeat.Service/Echo',
+      request,
+      metadata || {},
+      this.methodInfoEcho,
+      callback);
   }
 
   methodInfoPing = new grpcWeb.AbstractClientBase.MethodInfo(

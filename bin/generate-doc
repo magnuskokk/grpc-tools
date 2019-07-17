@@ -1,0 +1,26 @@
+#!/bin/bash
+
+rm -rf ${REPO_ROOT}/.direnv/swagger
+mkdir -p ${REPO_ROOT}/.direnv/swagger
+protoc \
+	-I${REPO_ROOT} \
+	-I${GOPATH}/src/ \
+	-I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/ \
+	-I${GOPATH}/src/github.com/gogo/googleapis/ \
+	-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
+	--swagger_out=logtostderr=true:${REPO_ROOT}/swagger/ \
+	${REPO_ROOT}/protobuf/services/heartbeat/service.proto
+
+# Install swagger-ui-dist static files)
+npm install --prefix ${REPO_ROOT}/.direnv/ -g swagger-ui-dist
+
+# Copy the swagger ui dist from node package dir)
+cp -r ${GOPATH}/lib/node_modules/swagger-ui-dist/* ${REPO_ROOT}/.direnv/swagger/
+
+# Copy services docs
+cp -r ${REPO_ROOT}/swagger/protobuf ${REPO_ROOT}/.direnv/swagger/protobuf
+
+# Replace the default example with our own service documentation)
+sed -i -e \
+	's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8000\/docs\/protobuf\/services\/heartbeat\/service.swagger.json/g' \
+	${REPO_ROOT}/.direnv/swagger/index.html

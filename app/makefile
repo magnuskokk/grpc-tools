@@ -10,6 +10,10 @@ test:
 bench:
 	@go test -run=xxx -bench=. ./...
 
+.PHONY: run-heartbeat-server
+run-heartbeat-server:
+	@go run cmd/heartbeat-server/main.go
+
 .PHONY: clean
 clean:
 	$(info - Removing all generated go files and directories)
