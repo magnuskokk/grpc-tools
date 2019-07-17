@@ -22,7 +22,7 @@ Install direnv extension: https://marketplace.visualstudio.com/items?itemName=Ru
 
 ## Generate API and run tests:
 * `$ make`
-* `$ make test`.
+* `$ make test`
 
 More options available in makefiles.
 
