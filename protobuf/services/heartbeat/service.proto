@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package heartbeat;
+
+import "google/api/annotations.proto";
+//import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+//import "google/protobuf/duration.proto";
+//import "google/protobuf/field_mask.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package = "../app/services/heartbeat;heartbeat";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/magnuskokk/grpc-tools";
+    description: "Example gRPC api server";
+  }
+  schemes: HTTP;
+};
+
+// All options (More info https://github.com/gogo/protobuf/blob/master/extensions.md)
+option (gogoproto.gostring_all) = true;
+option (gogoproto.equal_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.stringer_all) =  true;
+option (gogoproto.populate_all) = true;
+
+// Generate tests.
+option (gogoproto.testgen_all) = true;
+
+// Generate benchmarks.
+option (gogoproto.benchgen_all) = true;
+
+// Enable custom Marshal method.
+option (gogoproto.marshaler_all) = true;
+
+// Enable custom Unmarshal method.
+option (gogoproto.unmarshaler_all) = true;
+
+// Enable custom Size method (Required by Marshal and Unmarshal).
+option (gogoproto.sizer_all) = true;
+
+
+// Enable registration with golang/protobuf for the grpc-gateway.
+option (gogoproto.goproto_registration) = true;
+
+// Enable generation of XXX_MessageName methods for grpc-go/status.
+option (gogoproto.messagename_all) = true;
+
+message PingRequest {
+  bytes Message = 1;
+}
+message PingReply {
+  bytes Message = 1;
+}
+
+message StreamRequest {
+  bytes id = 1;
+  google.protobuf.Timestamp create_date = 2 [
+    (gogoproto.stdtime) = true
+  ];
+}
+
+message StreamPacket {
+  bytes id = 1;
+  bytes data = 2;
+  bytes sum = 3;
+}
+
+service Service {
+  rpc Ping(PingRequest) returns (PingReply) {
+    option (google.api.http) = {
+        get: "/ping"
+    };
+  }
+
+  // TODO create stream tests
+  rpc Stream(StreamRequest) returns (stream StreamPacket) {
+    option (google.api.http) = {
+        post: "/stream",
+        body: "*"
+    };
+  }
+}

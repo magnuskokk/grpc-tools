@@ -1,5 +1,2 @@
 .direnv/
 .idea/
-swagger/
-!swagger/pkg
-statik/

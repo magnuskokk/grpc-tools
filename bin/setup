@@ -27,6 +27,8 @@ chmod +x $GOPATH/bin/protoc-gen-grpc-web
 ################################
 echo -e "\033[1;37mInstalling development go packages...\033[0m"
 
+# Install the tools in generator module to keep version information.
+cd generator
 # Install raw sources to include .proto files from $GOPATH/src
 export GO111MODULE=off
 go get -u -v \
