@@ -44,7 +44,6 @@ go get -v \
     github.com/gogo/protobuf/gogoproto \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
-    github.com/rakyll/statik \
     github.com/golang/mock/gomock \
 
 go install github.com/golang/mock/mockgen
