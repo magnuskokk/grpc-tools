@@ -20,8 +20,15 @@ Do not open any IDE-s yet. Let's first create a local development environment so
 ### VSCode environment
 Install direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. Then open the directory. Click allow when asked to allow direnv. Do not click install anything before allowing direnv, this way you get the right GOPATH set to .direnv  with all Go related plugins. Now when asked about missing go tools, press Install all in the right corner. When it says "All tools successfully installed. You're ready to Go :)." then restart VSCode.
 
-## Generate API, test and view swagger docs:
+## Generate API and run tests:
 * `$ make`
-* `$ make test` to run all tests.
-* `$ cd app; make docserver`
-* Open browser at `http://localhost:8000/openapi-ui`
+* `$ make test`.
+
+More options available in makefiles.
+
+## View Swagger UI:
+* `$ cd app`
+* `$ make run-heartbeat-server`
+* `$ make run-docserver`
+
+* Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should returns the same message as a response.
