@@ -13,5 +13,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.9.4
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
+	github.com/rs/cors v1.6.0
 	google.golang.org/grpc v1.22.0
 )

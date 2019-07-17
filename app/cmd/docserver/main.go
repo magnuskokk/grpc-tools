@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	swagger := packr.NewBox(os.Getenv("GOPATH") + "/swagger")
-	http.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(swagger)))
+	ui := packr.NewBox(os.Getenv("GOPATH") + "/swagger")
+	json := packr.NewBox(os.Getenv("REPO_ROOT") + "/swagger")
+	http.Handle("/docs/", http.StripPrefix("/docs/", http.FileServer(ui)))
+	http.Handle("/json/", http.StripPrefix("/json/", http.FileServer(json)))
 	http.ListenAndServe(":8000", nil)
 }
