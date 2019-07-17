@@ -26,9 +26,13 @@ Install direnv extension: https://marketplace.visualstudio.com/items?itemName=Ru
 
 More options available in makefiles.
 
-## View Swagger UI:
+## Run server
 * `$ cd app`
 * `$ make run-heartbeat-server`
+* `$ curl -X GET 'http://localhost:8081/echo?ID=1&Message=test'` You should see the same message returned
+
+## Swagger UI (heartbeat-server must be running beforehand)
+* `$ cd app`
 * `$ make run-docserver`
 
 * Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should return the same message as a response.
