@@ -31,14 +31,14 @@ echo -e "\033[1;37mInstalling development go packages...\033[0m"
 cd generator
 # Install raw sources to include .proto files from $GOPATH/src
 export GO111MODULE=off
-go get -u -v \
+go get -v \
     github.com/gogo/protobuf/... \
     github.com/gogo/googleapis/... \
     github.com/grpc-ecosystem/grpc-gateway/...
 
 # Install modules with building as usual
 export GO111MODULE=on
-go get -u -v \
+go get -v \
     github.com/gogo/protobuf/proto \
     github.com/gogo/protobuf/protoc-gen-gogoslick \
     github.com/gogo/protobuf/gogoproto \
