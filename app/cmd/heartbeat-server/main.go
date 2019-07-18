@@ -58,13 +58,12 @@ func main() {
 	heartbeat.RegisterServiceServer(s, &heartbeat.Service{})
 
 	lis, err := net.Listen("tcp", ":9000")
-
-	defer lis.Close()
-	defer s.Stop()
-
 	if err != nil {
 		glog.Fatalf("failed to listen: %v", err)
 	}
+
+	defer lis.Close()
+	defer s.Stop()
 
 	go func() {
 		if err := s.Serve(lis); err != nil {
