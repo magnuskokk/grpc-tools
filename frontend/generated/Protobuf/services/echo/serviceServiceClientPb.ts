@@ -1,5 +1,5 @@
 /**
- * @fileoverview gRPC-Web generated client stub for heartbeat
+ * @fileoverview gRPC-Web generated client stub for echo
  * @enhanceable
  * @public
  */
@@ -10,18 +10,12 @@
 import * as grpcWeb from 'grpc-web';
 
 import * as google_api_annotations_pb from '../../../google/api/annotations_pb';
-import * as google_protobuf_timestamp_pb from 'google-protobuf/google/protobuf/timestamp_pb';
 import * as protoc$gen$swagger_options_annotations_pb from '../../../protoc-gen-swagger/options/annotations_pb';
 import * as github_com_gogo_protobuf_gogoproto_gogo_pb from '../../../github.com/gogo/protobuf/gogoproto/gogo_pb';
 
-import {
-  EchoRequest,
-  PingReply,
-  PingRequest,
-  StreamPacket,
-  StreamRequest} from './service_pb';
+import {EchoRequest} from './service_pb';
 
-export class ServiceClient {
+export class EchoServiceClient {
   client_: grpcWeb.AbstractClientBase;
   hostname_: string;
   credentials_: null | { [index: string]: string; };
@@ -55,52 +49,11 @@ export class ServiceClient {
                response: EchoRequest) => void) {
     return this.client_.rpcCall(
       this.hostname_ +
-        '/heartbeat.Service/Echo',
+        '/echo.EchoService/Echo',
       request,
       metadata || {},
       this.methodInfoEcho,
       callback);
-  }
-
-  methodInfoPing = new grpcWeb.AbstractClientBase.MethodInfo(
-    PingReply,
-    (request: PingRequest) => {
-      return request.serializeBinary();
-    },
-    PingReply.deserializeBinary
-  );
-
-  ping(
-    request: PingRequest,
-    metadata: grpcWeb.Metadata | null,
-    callback: (err: grpcWeb.Error,
-               response: PingReply) => void) {
-    return this.client_.rpcCall(
-      this.hostname_ +
-        '/heartbeat.Service/Ping',
-      request,
-      metadata || {},
-      this.methodInfoPing,
-      callback);
-  }
-
-  methodInfoStream = new grpcWeb.AbstractClientBase.MethodInfo(
-    StreamPacket,
-    (request: StreamRequest) => {
-      return request.serializeBinary();
-    },
-    StreamPacket.deserializeBinary
-  );
-
-  stream(
-    request: StreamRequest,
-    metadata?: grpcWeb.Metadata) {
-    return this.client_.serverStreaming(
-      this.hostname_ +
-        '/heartbeat.Service/Stream',
-      request,
-      metadata || {},
-      this.methodInfoStream);
   }
 
 }

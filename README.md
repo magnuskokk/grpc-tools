@@ -28,10 +28,10 @@ More options available in makefiles.
 
 ## Run server
 * `$ cd app`
-* `$ make run-heartbeat-server`
+* `$ make run-echo-server`
 * `$ curl -X GET 'http://localhost:8081/echo?ID=1&Message=test'` You should see the same message returned
 
-## Swagger UI (heartbeat-server must be running beforehand)
+## Swagger UI (echo-server must be running beforehand)
 * `$ cd app`
 * `$ make run-docserver`
 

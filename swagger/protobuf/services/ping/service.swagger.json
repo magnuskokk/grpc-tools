@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "protobuf/services/heartbeat/service.proto",
+    "title": "protobuf/services/ping/service.proto",
     "version": "1.0"
   },
   "schemes": [
@@ -14,20 +14,51 @@
     "application/json"
   ],
   "paths": {
-    "/echo": {
+    "/ping": {
       "get": {
-        "operationId": "Echo",
+        "operationId": "Ping",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/heartbeatEchoRequest"
+              "$ref": "#/definitions/pingPingReply"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Message",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "PingService"
+        ]
+      }
+    },
+    "/something": {
+      "get": {
+        "operationId": "Something",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "$ref": "#/x-stream-definitions/pingSomeReply"
             }
           }
         },
         "parameters": [
           {
             "name": "ID",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "Count",
             "in": "query",
             "required": false,
             "type": "string",
@@ -41,112 +72,26 @@
           }
         ],
         "tags": [
-          "Service"
-        ]
-      }
-    },
-    "/ping": {
-      "get": {
-        "operationId": "Ping",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/heartbeatPingReply"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "Message",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          }
-        ],
-        "tags": [
-          "Service"
-        ]
-      }
-    },
-    "/stream": {
-      "post": {
-        "summary": "TODO create stream tests",
-        "operationId": "Stream",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "$ref": "#/x-stream-definitions/heartbeatStreamPacket"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/heartbeatStreamRequest"
-            }
-          }
-        ],
-        "tags": [
-          "Service"
+          "PingService"
         ]
       }
     }
   },
   "definitions": {
-    "heartbeatEchoRequest": {
+    "pingPingReply": {
       "type": "object",
       "properties": {
-        "ID": {
-          "type": "string",
-          "format": "uint64"
-        },
         "Message": {
           "type": "string"
         }
       }
     },
-    "heartbeatPingReply": {
+    "pingSomeReply": {
       "type": "object",
       "properties": {
-        "Message": {
+        "ID": {
           "type": "string",
           "format": "byte"
-        }
-      }
-    },
-    "heartbeatStreamPacket": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "byte"
-        },
-        "data": {
-          "type": "string",
-          "format": "byte"
-        },
-        "sum": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "heartbeatStreamRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "byte"
-        },
-        "create_date": {
-          "type": "string",
-          "format": "date-time"
         }
       }
     },
@@ -192,17 +137,17 @@
     }
   },
   "x-stream-definitions": {
-    "heartbeatStreamPacket": {
+    "pingSomeReply": {
       "type": "object",
       "properties": {
         "result": {
-          "$ref": "#/definitions/heartbeatStreamPacket"
+          "$ref": "#/definitions/pingSomeReply"
         },
         "error": {
           "$ref": "#/definitions/runtimeStreamError"
         }
       },
-      "title": "Stream result of heartbeatStreamPacket"
+      "title": "Stream result of pingSomeReply"
     }
   },
   "externalDocs": {

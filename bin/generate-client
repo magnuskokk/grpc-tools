@@ -9,4 +9,4 @@ protoc \
 	-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
 	--grpc-web_out=import_style=typescript,mode=grpcwebtext:\
 ${REPO_ROOT}/frontend/generated \
-	${REPO_ROOT}/protobuf/services/heartbeat/service.proto
+$1

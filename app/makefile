@@ -19,13 +19,12 @@ test:
 bench:
 	@go test -run=xxx -bench=. ./...
 
-.PHONY: run-heartbeat-server
-run-heartbeat-server:
-	@go run cmd/heartbeat-server/main.go
+.PHONY: run-echo-server
+run-echo-server:
+	@go run cmd/echo-server/main.go
 
 # TODO take parameter of which service to serve
 .PHONY: run-docserver
 run-docserver:
 	$(info Running docserver at http://localhost:8000)
 	@go run cmd/docserver/main.go
-

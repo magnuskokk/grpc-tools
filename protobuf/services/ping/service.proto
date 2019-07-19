@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package heartbeat;
+package ping;
 
 import "google/api/annotations.proto";
 //import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
+//import "google/protobuf/timestamp.proto";
 //import "google/protobuf/duration.proto";
 //import "google/protobuf/field_mask.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option go_package = "../app/services/heartbeat;heartbeat";
+option go_package = "../app/services/ping;ping";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   info: {
@@ -54,48 +54,33 @@ option (gogoproto.goproto_registration) = true;
 option (gogoproto.messagename_all) = true;
 
 message PingRequest {
-  bytes Message = 1;
+  string Message = 1;
 }
+
 message PingReply {
-  bytes Message = 1;
+  string Message = 1;
 }
 
-message StreamRequest {
-  bytes id = 1;
-  google.protobuf.Timestamp create_date = 2 [
-    (gogoproto.stdtime) = true
-  ];
+message SomeRequest {
+  bytes ID = 1;
+  uint64 Count = 2;
+  string Message = 3;
 }
 
-message StreamPacket {
-  bytes id = 1;
-  bytes data = 2;
-  bytes sum = 3;
+message SomeReply {
+  bytes ID = 1;
 }
 
-message EchoRequest {
-  uint64 ID = 1;
-  string Message = 2;
-}
-
-service Service {
-  rpc Echo(EchoRequest) returns (EchoRequest) {
-    option (google.api.http) = {
-      get: "/echo"
-    };
-  }
-
+service PingService {
   rpc Ping(PingRequest) returns (PingReply) {
     option (google.api.http) = {
-        get: "/ping"
+      get: "/ping"
     };
   }
 
-  // TODO create stream tests
-  rpc Stream(StreamRequest) returns (stream StreamPacket) {
+  rpc Something(SomeRequest) returns (stream SomeReply) {
     option (google.api.http) = {
-        post: "/stream",
-        body: "*"
+      get: "/something"
     };
   }
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/services/heartbeat"
+	"app/services/echo"
 	"context"
 	"fmt"
 	"log"
@@ -55,7 +55,7 @@ func main() {
 
 	// Start grpc server
 	s := grpc.NewServer()
-	heartbeat.RegisterServiceServer(s, &heartbeat.Service{})
+	echo.RegisterEchoServiceServer(s, &echo.Service{})
 
 	lis, err := net.Listen("tcp", ":9000")
 	if err != nil {
@@ -80,7 +80,7 @@ func main() {
 	// TODO use some other
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err = heartbeat.RegisterServiceHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
+	err = echo.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
 	if err != nil {
 		glog.Fatal(err)
 	}

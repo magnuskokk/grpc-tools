@@ -1,7 +1,10 @@
-package heartbeat_test
+package echo_test
 
 import (
-	"context"
+	"app/pkg/testconn"
+	"app/services/echo"
+	"app/services/echo/mocks"
+	context "context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -10,27 +13,21 @@ import (
 	"net/http/httptest"
 
 	"github.com/golang/mock/gomock"
-
-	"app/pkg/testconn"
-
-	"app/services/heartbeat"
-	"app/services/heartbeat/mocks"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"google.golang.org/grpc"
+	grpc "google.golang.org/grpc"
 )
 
-var _ = Describe("HTTP server and client for heartbeat service", func() {
+var _ = Describe("HTTP server and client for echo service", func() {
 	var (
 		ctx    context.Context
 		cancel context.CancelFunc
 
 		mockCtrl          *gomock.Controller
-		mockServiceServer *mocks.MockServiceServer
+		mockServiceServer *mocks.MockEchoServiceServer
 
-		testServer *httptest.Server
-		testReply  *heartbeat.PingReply
+		testServer  *httptest.Server
+		testRequest *echo.EchoRequest
 	)
 
 	BeforeEach(func() {
@@ -38,13 +35,13 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		_ = cancel
 
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockServiceServer = mocks.NewMockServiceServer(mockCtrl)
+		mockServiceServer = mocks.NewMockEchoServiceServer(mockCtrl)
 
 		buf := testconn.NewBufNet()
 
 		go func() {
 			register := func(s *grpc.Server) {
-				heartbeat.RegisterServiceServer(s, mockServiceServer)
+				echo.RegisterEchoServiceServer(s, mockServiceServer)
 			}
 			if err := testconn.StartGRPCTestServer(ctx, buf, register); err != nil {
 				log.Fatal(err)
@@ -52,11 +49,11 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		}()
 
 		var err error
-		testServer, err = testconn.NewGatewayTestServer(ctx, buf, heartbeat.RegisterServiceHandlerFromEndpoint)
+		testServer, err = testconn.NewGatewayTestServer(ctx, buf, echo.RegisterEchoServiceHandlerFromEndpoint)
 		Expect(err).To(BeNil())
 
-		testReply = &heartbeat.PingReply{
-			Message: []byte("test"),
+		testRequest = &echo.EchoRequest{
+			Message: "test",
 		}
 	})
 
@@ -69,14 +66,14 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 		Context("Sending succeeds", func() {
 			BeforeEach(func() {
 				mockServiceServer.EXPECT().
-					Ping(
+					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
-					Return(testReply, nil)
+						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
+					).Return(testRequest, nil)
 			})
 
 			It("returns test reply", func() {
-				res, err := http.Get(testServer.URL + "/ping")
+				res, err := http.Get(testServer.URL + "/echo")
 				Expect(err).To(BeNil())
 
 				Expect(res.StatusCode).To(Equal(http.StatusOK))
@@ -89,27 +86,23 @@ var _ = Describe("HTTP server and client for heartbeat service", func() {
 				err = json.Unmarshal(body, &reply)
 				Expect(err).To(BeNil())
 
-				// dGVzdA== is base64 encoded value for []byte("test") in json
-				// we would have to unmarshal into a proper struct with []byte type
-				// not use a map to auto convert back to bytes
-				Expect(reply).To(HaveKeyWithValue("Message", "dGVzdA=="))
+				Expect(reply).To(HaveKeyWithValue("Message", "test"))
 			})
 		})
 
 		Context("Sending fails", func() {
 			BeforeEach(func() {
 				mockServiceServer.EXPECT().
-					Ping(
+					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&heartbeat.PingRequest{})).
-					Return(nil, errors.New("service error"))
+						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
+					).Return(nil, errors.New("service error"))
 			})
 
 			It("returns error", func() {
-				res, err := http.Get(testServer.URL + "/ping")
-				Expect(err).To(BeNil())
-
+				res, err := http.Get(testServer.URL + "/echo")
 				Expect(res.StatusCode).To(Equal(http.StatusInternalServerError))
+				Expect(err).To(BeNil())
 			})
 		})
 	})

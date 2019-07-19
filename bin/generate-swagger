@@ -9,7 +9,7 @@ protoc \
 	-I${GOPATH}/src/github.com/gogo/googleapis/ \
 	-I${GOPATH}/src/github.com/gogo/protobuf/protobuf/ \
 	--swagger_out=logtostderr=true:${REPO_ROOT}/swagger/ \
-	${REPO_ROOT}/protobuf/services/heartbeat/service.proto
+$1
 
 # Install swagger-ui-dist static files)
 npm install --prefix ${REPO_ROOT}/.direnv/ -g swagger-ui-dist
@@ -22,5 +22,5 @@ cp -r ${REPO_ROOT}/swagger/protobuf ${REPO_ROOT}/.direnv/swagger/protobuf
 
 # Replace the default example with our own service documentation)
 sed -i -e \
-	's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8081\/doc\/protobuf\/services\/heartbeat\/service.swagger.json/g' \
+	's/https:\/\/petstore.swagger.io\/v2\/swagger.json/http:\/\/localhost:8081\/doc\/protobuf\/services\/echo\/service.swagger.json/g' \
 	${REPO_ROOT}/.direnv/swagger/index.html

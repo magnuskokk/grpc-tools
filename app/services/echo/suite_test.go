@@ -1,4 +1,4 @@
-package heartbeat_test
+package echo_test
 
 import (
 	"testing"
@@ -9,5 +9,5 @@ import (
 
 func TestGRPC(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Heartbeat Service Suite")
+	RunSpecs(t, "Echo Service Suite")
 }
