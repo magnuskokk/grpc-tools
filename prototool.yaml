@@ -1,0 +1,79 @@
+# Paths to exclude when searching for Protobuf files.
+# These can either be file or directory names.
+# If there is a directory name, that directory and all sub-directories will be excluded.
+#excludes:
+#  - path/to/a
+#  - path/to/b/file.proto
+
+# Protoc directives.
+protoc:
+  # The Protobuf version to use from https://github.com/protocolbuffers/protobuf/releases.
+  version: 3.9.0
+
+  includes:
+    - /direnv/src/github.com/grpc-ecosystem/grpc-gateway
+    - /direnv/src/github.com/gogo/googleapis
+    - /direnv/src/github.com/gogo/protobuf/protobuf
+    - /direnv/src/github.com/gogo/protobuf/gogoproto
+
+  allow_unused_imports: false
+
+# Lint directives.
+lint:
+  # The lint group to use.
+  # Available groups: "uber1", "uber2", "google", "empty".
+  # The default group is the "uber1" lint group for backwards compatibility reasons,
+  # however we recommend using the "uber2" lint group.
+  # The special group "empty" has no linters, allowing you to manually specify all
+  # lint rules in lint.rules.add.
+  # Run prototool lint --list-all-lint-groups to see all available lint groups.
+  # Run prototool lint --list-lint-group GROUP to list the linters in the given lint group.
+  group: uber2
+  # Linter rules.
+  # Run prototool lint --list-all-linters to see all available linters.
+  # Run prototool lint --list-linters to see the currently configured linters.
+  rules:
+    # Disable mostly unrelated linters.
+    remove:
+      - FILE_OPTIONS_CSHARP_NAMESPACE_SAME_IN_DIR
+      - FILE_OPTIONS_EQUAL_CSHARP_NAMESPACE_CAPITALIZED
+      - FILE_OPTIONS_EQUAL_JAVA_MULTIPLE_FILES_TRUE
+      - FILE_OPTIONS_EQUAL_JAVA_OUTER_CLASSNAME_PROTO_SUFFIX
+      - FILE_OPTIONS_EQUAL_JAVA_PACKAGE_PREFIX
+      - FILE_OPTIONS_EQUAL_OBJC_CLASS_PREFIX_ABBR
+      - FILE_OPTIONS_EQUAL_PHP_NAMESPACE_CAPITALIZED
+      - FILE_OPTIONS_JAVA_MULTIPLE_FILES_SAME_IN_DIR
+      - FILE_OPTIONS_JAVA_PACKAGE_SAME_IN_DIR
+      - FILE_OPTIONS_OBJC_CLASS_PREFIX_SAME_IN_DIR
+      - FILE_OPTIONS_PHP_NAMESPACE_SAME_IN_DIR
+      - FILE_OPTIONS_REQUIRE_CSHARP_NAMESPACE
+      - FILE_OPTIONS_REQUIRE_JAVA_MULTIPLE_FILES
+      - FILE_OPTIONS_REQUIRE_JAVA_OUTER_CLASSNAME
+      - FILE_OPTIONS_REQUIRE_JAVA_PACKAGE
+      - FILE_OPTIONS_REQUIRE_OBJC_CLASS_PREFIX
+      - FILE_OPTIONS_REQUIRE_PHP_NAMESPACE
+
+# Code generation directives.
+generate:
+  go_options:
+    # The base import path. This should be the go path of the prototool.yaml file.
+    # This is required if you have any go plugins.
+    import_path: .
+
+    # Extra modifiers to include with Mfile=package.
+    extra_modifiers:
+      google/protobuf/timestamp.proto: github.com/gogo/protobuf/types
+      google/protobuf/duration.proto: github.com/gogo/protobuf/types
+      google/protobuf/empty.proto: github.com/gogo/protobuf/types
+      google/api/annotations.proto: github.com/gogo/googleapis/google/api
+      google/protobuf/field_mask.proto: github.com/gogo/protobuf/types
+
+  plugins:
+    - name: gogoslick
+      type: gogo
+      flags: plugins=grpc
+      output: ./app/generated/
+
+    - name: grpc-gateway
+      type: go
+      output: ./app/generated/

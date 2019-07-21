@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  prototool:
+    image: uber/prototool
+    volumes:
+      - ./:/work
+      - /work/.direnv
+      - ./.direnv:/direnv

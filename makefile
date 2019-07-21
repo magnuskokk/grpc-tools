@@ -3,19 +3,12 @@ all: generate
 
 .PHONY: generate
 generate:
-	generate-grpc ${REPO_ROOT}/protobuf/services/echo/service.proto
-	generate-grpc ${REPO_ROOT}/protobuf/services/ping/service.proto
+	docker-compose -f docker-compose.tools.yml run prototool prototool generate
+	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) /work/app/generated
 
-	generate-http ${REPO_ROOT}/protobuf/services/echo/service.proto
-	generate-http ${REPO_ROOT}/protobuf/services/ping/service.proto
-
-	generate-client ${REPO_ROOT}/protobuf/services/echo/service.proto
-	generate-client ${REPO_ROOT}/protobuf/services/ping/service.proto
-
-	generate-swagger ${REPO_ROOT}/protobuf/services/echo/service.proto
-	generate-swagger ${REPO_ROOT}/protobuf/services/ping/service.proto
-
-	$(MAKE) -C app generate
+.PHONY: lint
+lint:
+	docker-compose -f docker-compose.tools.yml run prototool prototool lint 
 
 .PHONY: test
 test:
@@ -31,9 +24,10 @@ clean: cleandoc
 	$(MAKE) -C app clean
 	$(MAKE) -C frontend clean
 	$(MAKE) -C swagger clean
+	rm -rf .gen
 
 .PHONY: sudoclean
 sudoclean: clean
 	$(info - Force clean with .direnv removal)
 	@sudo rm -rf ./.direnv
-
+	docker system prune --volumes -a
