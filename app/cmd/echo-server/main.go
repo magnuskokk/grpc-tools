@@ -1,7 +1,8 @@
 package main
 
 import (
-	"app/services/echo"
+	"app/api/echo"
+	echopb "app/generated/idl/echo"
 	"context"
 	"fmt"
 	"log"
@@ -55,7 +56,7 @@ func main() {
 
 	// Start grpc server
 	s := grpc.NewServer()
-	echo.RegisterEchoServiceServer(s, &echo.Service{})
+	echopb.RegisterEchoAPIServer(s, &echo.Service{})
 
 	lis, err := net.Listen("tcp", ":9000")
 	if err != nil {
@@ -80,7 +81,7 @@ func main() {
 	// TODO use some other
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err = echo.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
+	err = echopb.RegisterEchoAPIHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
 	if err != nil {
 		glog.Fatal(err)
 	}

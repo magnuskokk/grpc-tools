@@ -1,9 +1,9 @@
 package echo_test
 
 import (
+	"app/api/echo/mocks"
+	. "app/generated/idl/echo"
 	"app/pkg/testconn"
-	"app/services/echo"
-	"app/services/echo/mocks"
 	context "context"
 	"encoding/json"
 	"errors"
@@ -23,11 +23,11 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		ctx    context.Context
 		cancel context.CancelFunc
 
-		mockCtrl          *gomock.Controller
-		mockServiceServer *mocks.MockEchoServiceServer
+		mockCtrl      *gomock.Controller
+		mockAPIServer *mocks.MockEchoAPIServer
 
-		testServer  *httptest.Server
-		testRequest *echo.EchoRequest
+		testServer   *httptest.Server
+		testResponse *EchoResponse
 	)
 
 	BeforeEach(func() {
@@ -35,13 +35,13 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		_ = cancel
 
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockServiceServer = mocks.NewMockEchoServiceServer(mockCtrl)
+		mockAPIServer = mocks.NewMockEchoAPIServer(mockCtrl)
 
 		buf := testconn.NewBufNet()
 
 		go func() {
 			register := func(s *grpc.Server) {
-				echo.RegisterEchoServiceServer(s, mockServiceServer)
+				RegisterEchoAPIServer(s, mockAPIServer)
 			}
 			if err := testconn.StartGRPCTestServer(ctx, buf, register); err != nil {
 				log.Fatal(err)
@@ -49,10 +49,10 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		}()
 
 		var err error
-		testServer, err = testconn.NewGatewayTestServer(ctx, buf, echo.RegisterEchoServiceHandlerFromEndpoint)
+		testServer, err = testconn.NewGatewayTestServer(ctx, buf, RegisterEchoAPIHandlerFromEndpoint)
 		Expect(err).To(BeNil())
 
-		testRequest = &echo.EchoRequest{
+		testResponse = &EchoResponse{
 			Message: "test",
 		}
 	})
@@ -65,11 +65,11 @@ var _ = Describe("HTTP server and client for echo service", func() {
 	Describe("Sending commands", func() {
 		Context("Sending succeeds", func() {
 			BeforeEach(func() {
-				mockServiceServer.EXPECT().
+				mockAPIServer.EXPECT().
 					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
-					).Return(testRequest, nil)
+						gomock.AssignableToTypeOf(&EchoRequest{}),
+					).Return(testResponse, nil)
 			})
 
 			It("returns test reply", func() {
@@ -86,16 +86,16 @@ var _ = Describe("HTTP server and client for echo service", func() {
 				err = json.Unmarshal(body, &reply)
 				Expect(err).To(BeNil())
 
-				Expect(reply).To(HaveKeyWithValue("Message", "test"))
+				Expect(reply).To(HaveKeyWithValue("message", "test"))
 			})
 		})
 
 		Context("Sending fails", func() {
 			BeforeEach(func() {
-				mockServiceServer.EXPECT().
+				mockAPIServer.EXPECT().
 					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
+						gomock.AssignableToTypeOf(&EchoRequest{}),
 					).Return(nil, errors.New("service error"))
 			})
 

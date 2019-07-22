@@ -20,18 +20,7 @@ protoc:
 
 # Lint directives.
 lint:
-  # The lint group to use.
-  # Available groups: "uber1", "uber2", "google", "empty".
-  # The default group is the "uber1" lint group for backwards compatibility reasons,
-  # however we recommend using the "uber2" lint group.
-  # The special group "empty" has no linters, allowing you to manually specify all
-  # lint rules in lint.rules.add.
-  # Run prototool lint --list-all-lint-groups to see all available lint groups.
-  # Run prototool lint --list-lint-group GROUP to list the linters in the given lint group.
   group: uber2
-  # Linter rules.
-  # Run prototool lint --list-all-linters to see all available linters.
-  # Run prototool lint --list-linters to see the currently configured linters.
   rules:
     # Disable mostly unrelated linters.
     remove:
@@ -58,7 +47,7 @@ generate:
   go_options:
     # The base import path. This should be the go path of the prototool.yaml file.
     # This is required if you have any go plugins.
-    import_path: .
+    import_path: ./idl
 
     # Extra modifiers to include with Mfile=package.
     extra_modifiers:
@@ -77,3 +66,10 @@ generate:
     - name: grpc-gateway
       type: go
       output: ./app/generated/
+
+    - name: grpc-web
+      flags: import_style=typescript,mode=grpcweb
+      output: ./frontend/generated
+    
+    - name: swagger
+      output: ./swagger

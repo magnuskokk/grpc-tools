@@ -1,3 +1,3 @@
 .PHONY: clean
 clean:
-	@rm -rf protobuf
+	@rm -rf idl

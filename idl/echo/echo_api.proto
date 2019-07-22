@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package app.echo.v1;
 
-option go_package = "echov1";
+option go_package = "echo";
 
 import "google/api/annotations.proto";
 import "gogo.proto";
@@ -42,7 +42,7 @@ service EchoAPI {
   // Echo same request.
   rpc Echo(EchoRequest) returns (EchoResponse) {
     option (google.api.http) = {
-      get: "/foo"
+      get: "/echo"
     };
   }
 }

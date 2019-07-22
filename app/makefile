@@ -5,10 +5,7 @@ generate:
 .PHONY: clean
 clean:
 	$(info - Removing all generated go files and directories)
-	@find . -type f -iname "*.pb.go" -delete
-	@find . -type f -iname "*.pb.gw.go" -delete
-	@find . -type f -iname "*pb_test.go" -delete
-	@find . -type f -iname "statik.go" -delete
+	@rm -rf ./generated
 	@find . -type d -name "mocks" -exec rm -rf {} +
 
 .PHONY: test

@@ -10,13 +10,6 @@ GO111MODULE=off go get -d -v \
     github.com/gogo/googleapis/... \
     github.com/grpc-ecosystem/grpc-gateway/...
 
+go get -v golang.org/x/tools/go/packages
+go get -v github.com/golang/mock/gomock
 go install -v github.com/golang/mock/mockgen
-
-docker-compose -f docker-compose.tools.yml build
-    --build-arg username=$(id -un)
-    --build-arg user_id=$(id -u)
-    --build-arg group=$(id -gn)
-    --build-arg group_id=$(id -g)
-#- command: docker image prune -f
-
-     

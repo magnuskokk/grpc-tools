@@ -1,9 +1,9 @@
 package echo_test
 
 import (
+	"app/api/echo/mocks"
+	. "app/generated/idl/echo"
 	"app/pkg/testconn"
-	"app/services/echo"
-	"app/services/echo/mocks"
 	context "context"
 	"errors"
 
@@ -18,11 +18,10 @@ var _ = Describe("gRPC server and client for echo service", func() {
 		ctx    context.Context
 		cancel context.CancelFunc
 
-		mockCtrl          *gomock.Controller
-		mockServiceServer *mocks.MockEchoServiceServer
+		mockCtrl      *gomock.Controller
+		mockAPIServer *mocks.MockEchoAPIServer
 
-		client      echo.EchoServiceClient
-		testRequest *echo.EchoRequest
+		client EchoAPIClient
 	)
 
 	BeforeEach(func() {
@@ -30,23 +29,19 @@ var _ = Describe("gRPC server and client for echo service", func() {
 		_ = cancel
 
 		mockCtrl = gomock.NewController(GinkgoT())
-		mockServiceServer = mocks.NewMockEchoServiceServer(mockCtrl)
+		mockAPIServer = mocks.NewMockEchoAPIServer(mockCtrl)
 
 		buf := testconn.NewBufNet()
 
 		register := func(s *grpc.Server) {
-			echo.RegisterEchoServiceServer(s, mockServiceServer)
+			RegisterEchoAPIServer(s, mockAPIServer)
 		}
 		go testconn.StartGRPCTestServer(ctx, buf, register)
 
 		newClient := func(c *grpc.ClientConn) interface{} {
-			return echo.NewEchoServiceClient(c)
+			return NewEchoAPIClient(c)
 		}
-		client = testconn.NewGRPCTestClient(ctx, buf, newClient).(echo.EchoServiceClient)
-
-		testRequest = &echo.EchoRequest{
-			Message: "test",
-		}
+		client = testconn.NewGRPCTestClient(ctx, buf, newClient).(EchoAPIClient)
 	})
 
 	JustAfterEach(func() {
@@ -57,31 +52,31 @@ var _ = Describe("gRPC server and client for echo service", func() {
 	Describe("Sending commands", func() {
 		Context("Sending succeeds", func() {
 			BeforeEach(func() {
-				mockServiceServer.EXPECT().
+				mockAPIServer.EXPECT().
 					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
-					).Return(testRequest, nil)
+						gomock.AssignableToTypeOf(&EchoRequest{}),
+					).Return(&EchoResponse{}, nil)
 			})
 
 			It("returns test reply", func() {
-				reply, err := client.Echo(context.TODO(), testRequest)
-				Expect(*reply).To(Equal(*testRequest))
+				reply, err := client.Echo(context.TODO(), &EchoRequest{})
+				Expect(reply).To(BeAssignableToTypeOf(&EchoResponse{}))
 				Expect(err).To(BeNil())
 			})
 		})
 
 		Context("Sending fails", func() {
 			BeforeEach(func() {
-				mockServiceServer.EXPECT().
+				mockAPIServer.EXPECT().
 					Echo(
 						gomock.Any(),
-						gomock.AssignableToTypeOf(&echo.EchoRequest{}),
+						gomock.AssignableToTypeOf(&EchoRequest{}),
 					).Return(nil, errors.New("service error"))
 			})
 
 			It("returns error", func() {
-				reply, err := client.Echo(context.TODO(), testRequest)
+				reply, err := client.Echo(context.TODO(), &EchoRequest{})
 				Expect(reply).To(BeNil())
 				Expect(err).NotTo(BeNil())
 			})

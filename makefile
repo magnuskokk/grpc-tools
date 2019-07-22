@@ -4,7 +4,16 @@ all: generate
 .PHONY: generate
 generate:
 	docker-compose -f docker-compose.tools.yml run prototool prototool generate
-	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) /work/app/generated
+	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) \
+		/work/app/generated \
+		/work/frontend/generated \
+ 		/work/swagger/idl
+
+
+#	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) /work/frontend/generated
+#	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g)
+	
+	$(MAKE) -C app generate
 
 .PHONY: lint
 lint:
@@ -24,7 +33,6 @@ clean: cleandoc
 	$(MAKE) -C app clean
 	$(MAKE) -C frontend clean
 	$(MAKE) -C swagger clean
-	rm -rf .gen
 
 .PHONY: sudoclean
 sudoclean: clean
