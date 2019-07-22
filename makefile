@@ -8,12 +8,11 @@ generate:
 		/work/app/generated \
 		/work/frontend/generated \
  		/work/swagger/idl
-
-
-#	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) /work/frontend/generated
-#	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g)
-	
 	$(MAKE) -C app generate
+
+.PHONY: servedoc
+servedoc:
+	docker-compose -f docker-compose.tools.yml run -p 8080:8080 swagger
 
 .PHONY: lint
 lint:

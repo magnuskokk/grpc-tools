@@ -7,3 +7,10 @@ services:
       - ./:/work
       - /work/.direnv
       - ./.direnv:/direnv
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    volumes:
+      - ./swagger/idl/echo/echo_api.swagger.json:/docs/echo_api.swagger.json
+    environment:
+      - SWAGGER_JSON="/docs/echo_api.swagger.json"
