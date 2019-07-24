@@ -29,19 +29,10 @@ services:
     tty: yes
 
   # serve static api doc json files from ./swagger
+  # TODO swagger ui
   docserver:
     image: nginx
     volumes:
       - ./swagger:/usr/share/nginx/html:ro
     ports:
       - 8081:80
-
-  # serve the doc browser 
-  echo-swagger:
-    image: swaggerapi/swagger-ui
-    depends_on:
-      - docserver
-    environment:
-      - API_URL=localhost:8081/idl/echo/echov1/echo_api.swagger.json
-    ports:
-      - 8080:8080

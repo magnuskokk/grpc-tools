@@ -31,7 +31,8 @@ Now that you have the environment loaded, you can run some commands.
 * `$ tusk serve.echo`
 * Make sure it's responding: `$ curl 'http://localhost:8000/echo?Message=test'` You should see the same message returned
 
-## Swagger UI (echo-server must be running beforehand)
+## Swagger UI (echo-server must be running beforehand to enable the try out feature)
+### TODO needs development
 * `$ tusk serve.echo.swagger`
 
 * Open a browser at `http://localhost:8080` to see the docs.

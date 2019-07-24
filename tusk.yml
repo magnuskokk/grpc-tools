@@ -51,7 +51,7 @@ tasks:
       - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.dev
 
   protolint:
-    usage: Lint protobuf defnitions using prototool.
+    usage: Lint protobuf definitions using prototool.
     run:
       command: >
         docker-compose -f docker-compose.tools.yml run --rm -u ${uid}:${gid} prototool
