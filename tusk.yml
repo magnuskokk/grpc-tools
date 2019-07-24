@@ -98,6 +98,11 @@ tasks:
     run:
       command: docker-compose up echo-server
 
+  serve.echo.local:
+    usage: Start echo dev server in debug mode.
+    run:
+      command: tusk -f ./app/tusk.yml serve.echo
+
   serve.echo.swagger:
     usage: Start the swagger UI
     description: TODO not working yet
