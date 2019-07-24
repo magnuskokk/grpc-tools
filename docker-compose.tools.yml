@@ -2,9 +2,13 @@ version: '3.7'
 
 services:
   go:
-    image: golang:1.12.7-alpine
-    volumes:
-      - ./.direnv:/go
+    build: 
+      context: ./docker/go
+      dockerfile: Dockerfile
+    container_name: go
+    working_dir: /app
+    stdin_open: yes
+    tty: yes
 
   prototool:
     image: uber/prototool
@@ -12,6 +16,8 @@ services:
       - ./:/work
       - /work/.direnv
       - ./.direnv:/direnv
+    stdin_open: yes
+    tty: yes
 
   swagger:
     image: swaggerapi/swagger-ui

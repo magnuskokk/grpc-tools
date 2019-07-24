@@ -2,16 +2,11 @@
 set -Eeuo pipefail
 trap "echo ERR trap fired!" ERR
 
-echo -e "\033[1;37mInstalling development go packages...\033[0m"
-
-# Download various .proto sources.
-GO111MODULE=off go get -d -v \
-    github.com/gogo/protobuf/... \
-    github.com/gogo/googleapis/... \
-    github.com/grpc-ecosystem/grpc-gateway/...
-
-go get -v golang.org/x/tools/go/packages
-go get -v github.com/golang/mock/gomock
-go install -v github.com/golang/mock/mockgen
+echo -e "\033[1;37mInstalling tusk task runner...\033[0m"
 
 curl -sL https://git.io/tusk | bash -s -- -b .direnv/bin latest
+
+echo -e "\033[1;37mBuilding the development environment...\033[0m"
+
+tusk build-dev-tools
+tusk install-dev-deps

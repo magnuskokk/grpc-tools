@@ -1,0 +1,21 @@
+tasks:
+  install-proto-wkt:
+    usage: Install Well-Known Types and various other .proto sources.
+    run:
+      - set-environment:
+          GO111MODULE: off
+      - command: >
+          go get -u -v
+          github.com/gogo/protobuf/...
+          github.com/gogo/googleapis/...
+          github.com/grpc-ecosystem/grpc-gateway/...
+
+  install:
+    usage: Install go dev deps
+    run:
+      - task: install-proto-wkt
+      - set-environment:
+          GO111MODULE: on
+      - command: go get -u -v golang.org/x/tools/go/packages
+      - command: go get -u -v github.com/golang/mock/gomock
+      - command: go install -v github.com/golang/mock/mockgen

@@ -4,40 +4,32 @@ Playground repo for gRPC. Example roughly based on https://github.com/gogo/grpc-
 
 
 ## Required packages for development
-* `go`
-* `npm` (for downloading swagger-ui-dist)
 * `direnv`
-* `wget`
-* `bsdtar`
+* `docker-compose`
 
 ## Setup the development environment
 Do not open any IDE-s yet. Let's first create a local development environment something akin to virtualenv for python.
 
 * Install direnv from your package manager and setup direnv shell hook for the terminal you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
-* `$ direnv allow .` to allow loading environment variables from .envrc.
-* `$ setup` to install tools necessary for code generation.
+* `$ direnv allow .` to setup a local environment based on .envrc.
+* `$ ./setup.sh` to build and install dev dependencies.
 
-### VSCode environment
-Install direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. Then open the directory. Click allow when asked to allow direnv. Do not click install anything before allowing direnv, this way you get the right GOPATH set to .direnv  with all Go related plugins. Now when asked about missing go tools, press Install all in the right corner. When it says "All tools successfully installed. You're ready to Go :)." then restart VSCode.
+### VSCode
+direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. This allows installing all tools to .direnv directory.
 
-## Generate API and run tests:
-* `$ make`
-* `$ make test`
+## List all commands
+* `$ tusk`
 
-More options available in makefiles.
+## Some useful commands
+* `$ tusk protolint`
+* `$ tusk protoc`
+* `$ tusk test.go`
 
 ## Run server
-* `$ cd app`
-* `$ make run-echo-server`
-* `$ curl -X GET 'http://localhost:8081/echo?ID=1&Message=test'` You should see the same message returned
+* `$ tusk serve-echo`
+* Make sure it's responding: `$ curl 'http://localhost:8081/echo?Message=test'` You should see the same message returned
 
 ## Swagger UI (echo-server must be running beforehand)
-* `$ cd app`
-* `$ make run-docserver`
+* `$ tusk serve-doc`
 
-* Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should return the same message as a response.
-
-
-All commands defined in tusk.yml are docker wrappers for executing only in dev environment by the developer.
-Makefiles depend on environment variables which in dev env is provided by direnv.
-
+* Open a browser at `http://localhost:8000`.

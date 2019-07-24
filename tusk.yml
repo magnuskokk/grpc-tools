@@ -1,13 +1,82 @@
-tasks:
-  build:
-    usage: Build tools and environment
-    options:
-      user:
-        usage: User id to run as
-        default:
-          command: id -u
+options:
+  user:
+    usage: User id to run as.
+    short: u
+    default:
+      command: id -u
+  pwd:
+    usage: Present working directory.
+    private: true
+    default:
+      command: pwd
 
+tasks:
+  build-dev-tools:
+    usage: Build the docker containers for tools.
+    run:
+      command: >
+        docker-compose -f docker-compose.tools.yml build --force-rm --parallel
+
+  install-dev-deps:
+    usage: Install development dependencies.
+    run:
+      - command: >
+          docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/tools:/app" -v "${pwd}/.direnv:/go" go
+          tusk install
+
+  protolint:
+    usage: Lint protobuf defnitions using prototool.
+    run:
+      command: >
+        docker-compose -f docker-compose.tools.yml run -u ${user} prototool
+        prototool lint
+
+  protoc:
+    usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
         docker-compose -f docker-compose.tools.yml run -u ${user} prototool
         prototool generate
+
+  test.go:
+    usage: Run all go tests.
+    description: |
+      Test
+    run:
+      command: >
+        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
+        tusk test
+
+  bench.go:
+    usage: Run all go benchmarks.
+    run:
+     command: >
+        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
+        tusk bench
+
+  clean:
+    usage: Remove all generated files.
+    run:
+      - command: >
+          docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
+          tusk clean
+      - command: tusk -f ./frontend/tusk.yml clean
+      - command: tusk -f ./swagger/tusk.yml clean
+    
+  envclean:
+    usage: Reset the dev environment.
+    run:
+      - command: sudo rm -rf ./.direnv
+      - command: docker system prune --volumes -a
+
+  serve-echo:
+    usage: Start the echo service server.
+    run:
+      command: >
+        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
+        go run cmd/echo-server/main.go
+
+  serve-doc:
+    usage: Start the swagger server.
+    run:
+      command: docker-compose -f docker-compose.tools.yml run -p 8080:8080 swagger

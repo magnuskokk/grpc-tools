@@ -1,0 +1,23 @@
+tasks:
+  generate:
+    usage: Run //go:generate directives.
+    description: |
+      This is currently used for generating mocks.
+    run:
+      command: go generate -x ./...
+
+  clean:
+    usage: Remove all generated go files.
+    run:
+      - command: rm -rf ./idl
+      - command: find . -type d -name "mocks" -exec rm -rf {} +
+
+  test:
+    usage: Run all go tests.
+    run:
+      command: go test -count=1 -v ./...
+
+  bench:
+    usage: Run all go benchmarks.
+    run:
+      command: go test -run=xxx -bench=. ./...
