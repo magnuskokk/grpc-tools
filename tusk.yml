@@ -13,6 +13,13 @@ options:
       command: id -g
 
 tasks:
+  docker.destroy:
+    usage: Stop services and do global prune.
+    run:
+      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
+      - command: docker-compose down --remove-orphans
+      - command: docker system prune --volumes -a
+
   env.destroy:
     usage: Destroy the dev environment.
     run:
@@ -25,15 +32,9 @@ tasks:
       - task: env.destroy
       - command: sh setup.sh
 
-  docker.destroy:
-    usage: Stop services and do global prune.
-    run:
-      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
-      - command: docker-compose down --remove-orphans
-      - command: docker system prune --volumes -a
-
   build.dev:
     usage: Build the docker containers for dev tools.
+    description: Called by setup.sh.
     run:
       command: >
         docker-compose -f docker-compose.tools.yml build
@@ -45,6 +46,7 @@ tasks:
 
   install.dev:
     usage: Install development tools.
+    description: Called by setup.sh.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d gobase
       - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.proto.wkt
@@ -98,6 +100,7 @@ tasks:
 
   serve.echo.swagger:
     usage: Start the swagger UI
+    description: TODO not working yet
     run:
       command: >
         docker-compose -f docker-compose.tools.yml run --rm --service-ports echo-swagger
