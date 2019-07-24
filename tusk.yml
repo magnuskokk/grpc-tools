@@ -91,7 +91,6 @@ tasks:
       - command: tusk -f ./frontend/tusk.yml clean
       - command: tusk -f ./swagger/tusk.yml clean
  
-
   serve.echo:
     usage: Start the echo service gRPC and HTTP server.
     run:
