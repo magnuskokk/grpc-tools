@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  echo-server:
+    image: grpc-tools/echo-server
+    build: 
+      context: ./app/
+      dockerfile: api/echo/docker/Dockerfile
+    ports:
+      - 8081:8081

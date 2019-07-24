@@ -75,22 +75,30 @@ tasks:
   dockerclean:
     usage: Reset docker
     run:
-      - command: docker-compose -f docker-compose.tools.yml down
+      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
+      - command: docker-compose down --remove-orphans
       - command: docker system prune --volumes -a
 
   envclean:
     usage: Reset the dev environment.
-    description: Run ./setup.sh after cleaning.
     run:
       - task: dockerclean
       - command: sudo rm -rf ./.direnv
 
   serve-echo:
-    usage: Start the echo service server.
+    usage: Start the echo service server by using docker-compose run.
+    description: Useful for quick development.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" -p 8081:8081 go
+        docker-compose -f docker-compose.tools.yml run -u ${uid} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" -p 8081:8081 go
         go run cmd/echo-server/main.go
+
+  serve-echo-image:
+    usage: Start the echo service server by using compiled and packaged container.
+    description: Run the final production image.
+    run:
+      command: >
+        docker-compose up echo-server
 
   serve-doc:
     usage: Start the swagger server.

@@ -2,9 +2,9 @@ version: '3.7'
 
 services:
   go:
-    container_name: go
+    image: grpc-tools/go-base
     build: 
-      context: ./docker/go
+      context: ./docker/go-base
       dockerfile: Dockerfile
       args:
         - USER

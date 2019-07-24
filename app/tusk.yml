@@ -1,4 +1,9 @@
 tasks:
+  install:
+    usage: Compile and install go services to $GOPATH/bin.
+    run:
+      command: go install -v ./...
+
   generate:
     usage: Run //go:generate directives.
     description: |
@@ -39,6 +44,7 @@ tasks:
       - task: install-proto-wkt
       - set-environment:
           GO111MODULE: on
+      - command: go get -v github.com/mitchellh/gox
       - command: go get -v golang.org/x/tools/go/packages
       - command: go get -v github.com/golang/mock/gomock
       - command: go install -v github.com/golang/mock/mockgen
