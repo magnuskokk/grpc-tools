@@ -7,6 +7,8 @@ This project aims to set up an opinionated environment for protobuf based web de
 * `docker-compose`
 
 ## Setup the development environment
+* `$ git clone https://github.com/magnuskokk/grpc-tools.git`
+* `$ cd grpc-tools`
 * Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
 * `$ direnv allow .` to load local environment variables from .envrc.
 * `$ ./setup.sh` to build and install the dev environment.
