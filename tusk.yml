@@ -16,7 +16,7 @@ tasks:
   docker.destroy:
     usage: Stop services and do global prune.
     run:
-      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
+      - command: docker-compose -f docker-compose.dev.yml down --remove-orphans
       - command: docker-compose down --remove-orphans
       - command: docker system prune --volumes -a
 
@@ -37,7 +37,7 @@ tasks:
     description: Called by setup.sh.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml build
+        docker-compose -f docker-compose.dev.yml build
         --force-rm
         --parallel
         --build-arg USER=${user}
@@ -48,43 +48,43 @@ tasks:
     usage: Install development tools.
     description: Called by setup.sh.
     run:
-      - command: docker-compose -f docker-compose.tools.yml up -d gobase
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.proto.wkt
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.dev
+      - command: docker-compose -f docker-compose.dev.yml up -d gobase
+      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.proto.wkt
+      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.dev
 
   protolint:
     usage: Lint protobuf definitions using prototool.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run --rm -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool lint
 
   protoc:
     usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run --rm -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
   app.generate.go:
     usage: Run all //go:generate directives.
     run:
-      - command: docker-compose -f docker-compose.tools.yml up -d gobase
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk generate
+      - command: docker-compose -f docker-compose.dev.yml up -d gobase
+      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk generate
 
   app.test.go:
     usage: Run all go tests.
     description: |
       Test
     run:
-      - command: docker-compose -f docker-compose.tools.yml up -d gobase
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk test
+      - command: docker-compose -f docker-compose.dev.yml up -d gobase
+      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk test
 
   app.bench.go:
     usage: Run all go benchmarks.
     run:
-      - command: docker-compose -f docker-compose.tools.yml up -d gobase
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk bench
+      - command: docker-compose -f docker-compose.dev.yml up -d gobase
+      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk bench
 
   clean:
     usage: Remove all generated files.
@@ -103,4 +103,4 @@ tasks:
     description: TODO not working yet
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run --rm --service-ports echo-swagger
+        docker-compose -f docker-compose.dev.yml run --rm --service-ports echo-swagger
