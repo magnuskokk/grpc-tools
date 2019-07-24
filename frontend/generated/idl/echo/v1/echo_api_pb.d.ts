@@ -1,7 +1,7 @@
 import * as jspb from "google-protobuf"
 
-import * as google_api_annotations_pb from '../../google/api/annotations_pb';
-import * as gogo_pb from '../../gogo_pb';
+import * as google_api_annotations_pb from '../../../google/api/annotations_pb';
+import * as gogo_pb from '../../../gogo_pb';
 
 export class EchoRequest extends jspb.Message {
   getMessage(): string;

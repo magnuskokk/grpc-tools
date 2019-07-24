@@ -5,7 +5,7 @@ generate:
 .PHONY: clean
 clean:
 	$(info - Removing all generated go files and directories)
-	@rm -rf ./generated
+	@rm -rf ./idl
 	@find . -type d -name "mocks" -exec rm -rf {} +
 
 .PHONY: test

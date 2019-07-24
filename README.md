@@ -36,3 +36,8 @@ More options available in makefiles.
 * `$ make run-docserver`
 
 * Open a browser at `http://localhost:8000`. You should see the swagger client. Try out GET /echo, it should return the same message as a response.
+
+
+All commands defined in tusk.yml are docker wrappers for executing only in dev environment by the developer.
+Makefiles depend on environment variables which in dev env is provided by direnv.
+

@@ -9,8 +9,8 @@
 
 import * as grpcWeb from 'grpc-web';
 
-import * as google_api_annotations_pb from '../../google/api/annotations_pb';
-import * as gogo_pb from '../../gogo_pb';
+import * as google_api_annotations_pb from '../../../google/api/annotations_pb';
+import * as gogo_pb from '../../../gogo_pb';
 
 import {
   EchoRequest,

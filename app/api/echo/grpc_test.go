@@ -2,7 +2,7 @@ package echo_test
 
 import (
 	"app/api/echo/mocks"
-	. "app/generated/idl/echo"
+	. "app/idl/echo/v1/echov1"
 	"app/pkg/testconn"
 	context "context"
 	"errors"

@@ -1,40 +1,37 @@
 .PHONY: all
 all: generate
 
+.PHONY: clean
+clean:
+	$(MAKE) -C app clean
+	$(MAKE) -C frontend clean
+	$(MAKE) -C swagger clean
+
+.PHONY: envclean
+envclean: clean
+	@sudo rm -rf ./.direnv
+	docker system prune --volumes -a
+
+user != id -u
+
 .PHONY: generate
 generate:
-	docker-compose -f docker-compose.tools.yml run prototool prototool generate
-	docker-compose -f docker-compose.tools.yml run prototool chown -R $(shell id -u):$(shell id -g) \
-		/work/app/generated \
-		/work/frontend/generated \
- 		/work/swagger/idl
+	docker-compose -f docker-compose.tools.yml run -u $(user) prototool \
+		prototool generate
+
 	$(MAKE) -C app generate
+
+.PHONY: listlinters
+listlinters:
+	docker-compose -f docker-compose.tools.yml run -u $(user) prototool \
+		prototool lint --list-lint-group uber2
 
 .PHONY: servedoc
 servedoc:
 	docker-compose -f docker-compose.tools.yml run -p 8080:8080 swagger
 
-.PHONY: lint
-lint:
-	docker-compose -f docker-compose.tools.yml run prototool prototool lint 
 
 .PHONY: test
 test:
 	$(MAKE) -C app test
 
-.PHONY: cleandoc
-cleandoc:
-	@rm -rf .direnv/swagger
-
-.PHONY: clean
-clean: cleandoc
-	$(info - Removing all generated files and directories)
-	$(MAKE) -C app clean
-	$(MAKE) -C frontend clean
-	$(MAKE) -C swagger clean
-
-.PHONY: sudoclean
-sudoclean: clean
-	$(info - Force clean with .direnv removal)
-	@sudo rm -rf ./.direnv
-	docker system prune --volumes -a

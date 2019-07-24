@@ -13,3 +13,5 @@ GO111MODULE=off go get -d -v \
 go get -v golang.org/x/tools/go/packages
 go get -v github.com/golang/mock/gomock
 go install -v github.com/golang/mock/mockgen
+
+curl -sL https://git.io/tusk | bash -s -- -b .direnv/bin latest

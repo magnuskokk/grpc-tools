@@ -1,22 +1,19 @@
-# Paths to exclude when searching for Protobuf files.
-# These can either be file or directory names.
-# If there is a directory name, that directory and all sub-directories will be excluded.
-#excludes:
-#  - path/to/a
-#  - path/to/b/file.proto
-
 # Protoc directives.
 protoc:
-  # The Protobuf version to use from https://github.com/protocolbuffers/protobuf/releases.
   version: 3.9.0
-
+  allow_unused_imports: false
   includes:
     - /direnv/src/github.com/grpc-ecosystem/grpc-gateway
     - /direnv/src/github.com/gogo/googleapis
     - /direnv/src/github.com/gogo/protobuf/protobuf
     - /direnv/src/github.com/gogo/protobuf/gogoproto
 
-  allow_unused_imports: false
+  #file_header:
+  #  content: |
+  #    //
+  #    // Acme, Inc. (c) 2019
+  #    //
+  #  is_commented: true
 
 # Lint directives.
 lint:
@@ -47,7 +44,7 @@ generate:
   go_options:
     # The base import path. This should be the go path of the prototool.yaml file.
     # This is required if you have any go plugins.
-    import_path: ./idl
+    import_path: /direnv
 
     # Extra modifiers to include with Mfile=package.
     extra_modifiers:
@@ -61,11 +58,11 @@ generate:
     - name: gogoslick
       type: gogo
       flags: plugins=grpc
-      output: ./app/generated/
+      output: ./app
 
     - name: grpc-gateway
       type: go
-      output: ./app/generated/
+      output: ./app
 
     - name: grpc-web
       flags: import_style=typescript,mode=grpcweb

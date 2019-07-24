@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package app.echo.v1;
 
-option go_package = "echo";
+option go_package = "echov1";
 
 import "google/api/annotations.proto";
 import "gogo.proto";

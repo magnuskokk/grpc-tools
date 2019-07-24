@@ -1,19 +1,19 @@
 package echo
 
+//go:generate mockgen -destination=mocks/api.go -package=mocks app/idl/echo/v1/echov1 EchoAPIServer
+
 import (
-	. "app/generated/idl/echo"
+	//	"app/idl/echo/v1/echov1"
 	"context"
 )
 
-//go:generate mockgen -destination=mocks/api.go -package=mocks app/generated/idl/echo EchoAPIServer
-
-// Service for echo server.
-type Service struct {
+// API implements the generated EchoAPIServer
+type API struct {
 }
 
 // Echo returns the same request as a reply.
-func (s *Service) Echo(ctx context.Context, req *EchoRequest) (*EchoResponse, error) {
-	return &EchoResponse{
+func (api *API) Echo(ctx context.Context, req *echov1.EchoRequest) (*echov1.EchoResponse, error) {
+	return &echov1.EchoResponse{
 		Message: req.Message,
 	}, nil
 }

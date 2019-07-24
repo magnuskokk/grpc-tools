@@ -1,0 +1,13 @@
+tasks:
+  build:
+    usage: Build tools and environment
+    options:
+      user:
+        usage: User id to run as
+        default:
+          command: id -u
+
+    run:
+      command: >
+        docker-compose -f docker-compose.tools.yml run -u ${user} prototool
+        prototool generate

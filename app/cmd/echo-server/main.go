@@ -2,7 +2,7 @@ package main
 
 import (
 	"app/api/echo"
-	echopb "app/generated/idl/echo"
+	//	"app/idl/echo/v1/echov1"
 	"context"
 	"fmt"
 	"log"
@@ -52,18 +52,18 @@ func fileserver(r chi.Router, path string, root http.FileSystem) {
 }
 
 func main() {
+	// Defer based quit mechanism.
 	defer glog.Flush()
 
 	// Start grpc server
-	s := grpc.NewServer()
-	echopb.RegisterEchoAPIServer(s, &echo.Service{})
-
 	lis, err := net.Listen("tcp", ":9000")
 	if err != nil {
 		glog.Fatalf("failed to listen: %v", err)
 	}
-
 	defer lis.Close()
+
+	s := grpc.NewServer()
+	echov1.RegisterEchoAPIServer(s, &echo.EchoAPI{})
 	defer s.Stop()
 
 	go func() {
@@ -78,9 +78,10 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	// TODO ServeMux opts
-	// TODO use some other
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
+
+	// Connect to the gRPC server.
 	err = echopb.RegisterEchoAPIHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
 	if err != nil {
 		glog.Fatal(err)
