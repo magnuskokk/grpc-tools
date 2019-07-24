@@ -1,21 +1,22 @@
-# GRPC tools
+# Development environment and tools for full-stack gRPC service generation.
 
-Tools for full-stack gRPC service generation. This project aims to set up an opinionated environment for proto web development, explore the possibilities of generating full-stack systems and minimize actual code writing.
-
+This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype full-stack monitoring and control panel systems for abstract devices. Final goal would be to generate disk images of docker swarm mode Raspberry Pi cluster nodes.
 
 ## Required packages for development
 * `direnv`
 * `docker-compose`
 
 ## Setup the development environment
-Do not open any IDE-s yet. Let's first create a local development environment something akin to virtualenv for python.
+* Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
+* `$ direnv allow .` to load local environment variables from .envrc.
+* `$ ./setup.sh` to build and install the dev environment.
 
-* Install direnv from your package manager and setup direnv shell hook for the terminal you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
-* `$ direnv allow .` to setup a local environment based on .envrc.
-* `$ ./setup.sh` to build and install dev dependencies.
+## Project layout
+It is possible to run commands through the root `tusk.yml` file using docker or locally by manually using `app/tusk.yml` if you have a local go installation.
 
-### VSCode
-direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. This allows installing all tools to .direnv directory.
+All proto services are defined in `./idl/{servicename}/{servicename}{version}`. The generated go package for each service is `app/idl/{servicename}/{servicename}{version}`. A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`
+
+Now that you have the environment loaded, you can run some commands.
 
 ## List all commands
 * `$ tusk`
@@ -27,10 +28,17 @@ direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac
 * `$ tusk test.go`
 
 ## Run server
-* `$ tusk serve-echo`
-* Make sure it's responding: `$ curl 'http://localhost:8081/echo?Message=test'` You should see the same message returned
+* `$ tusk serve.echo.dev`
+* Make sure it's responding: `$ curl 'http://localhost:8000/echo?Message=test'` You should see the same message returned
 
 ## Swagger UI (echo-server must be running beforehand)
-* `$ tusk serve-doc`
+* `$ tusk serve.echo.swagger`
 
-* Open a browser at `http://localhost:8000`.
+* Open a browser at `http://localhost:8080`.
+
+## Reset the dev environment:
+* `$ tusk envclean`
+* `$ ./setup.sh` to setup from scratch.
+
+### VSCode
+direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. This allows installing all go tools in the .direnv directory.

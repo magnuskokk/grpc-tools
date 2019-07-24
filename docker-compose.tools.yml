@@ -1,10 +1,11 @@
 version: '3.7'
 
 services:
-  go:
-    image: grpc-tools/go-base
+  # base go image for running development related tasks
+  gobase:
+    image: grpc-tools/gobase:devenv
     build: 
-      context: ./docker/go-base
+      context: ./docker/gobase
       dockerfile: Dockerfile
       args:
         - USER
@@ -17,6 +18,7 @@ services:
     stdin_open: yes
     tty: yes
 
+  # prototool the swiss army knife of protobufs
   prototool:
     image: uber/prototool
     volumes:
@@ -26,9 +28,20 @@ services:
     stdin_open: yes
     tty: yes
 
-  swagger:
-    image: swaggerapi/swagger-ui
+  # serve static api doc json files from ./swagger
+  docserver:
+    image: nginx
     volumes:
-      - ./swagger/idl/echo/echo_api.swagger.json:/docs/echo_api.swagger.json
+      - ./swagger:/usr/share/nginx/html:ro
+    ports:
+      - 8081:80
+
+  # serve the doc browser 
+  echo-swagger:
+    image: swaggerapi/swagger-ui
+    depends_on:
+      - docserver
     environment:
-      - SWAGGER_JSON="/docs/echo_api.swagger.json"
+      - API_URL=localhost:8081/idl/echo/echov1/echo_api.swagger.json
+    ports:
+      - 8080:8080

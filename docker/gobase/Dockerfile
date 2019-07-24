@@ -24,4 +24,4 @@ RUN mkdir -p ${APP_PATH} \
 
 WORKDIR ${APP_PATH}
 
-USER ${username}
+USER ${USER}

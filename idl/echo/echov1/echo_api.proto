@@ -4,8 +4,24 @@ package app.echo.v1;
 
 option go_package = "echov1";
 
+import "protoc-gen-swagger/options/annotations.proto";
 import "google/api/annotations.proto";
 import "gogo.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  // actual server for "Try out" feature
+  host: "localhost:8080";
+  // see https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-swagger/options/openapiv2.proto#L24
+  // base_path: "/api";
+  external_docs: {
+    url: "https://github.com/magnuskokk/grpc-tools";
+    description: "gRPC tools and generation";
+  }
+  schemes: HTTP;
+};
 
 // All options (More info https://github.com/gogo/protobuf/blob/master/extensions.md)
 option (gogoproto.gostring_all) = true;

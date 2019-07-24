@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -93,12 +92,8 @@ func main() {
 	router.Use(cors.Default().Handler)
 	router.Handle("/*", mux)
 
-	// provide swagger json from same server to enable swagger try out
-	jsonDir := filepath.Join(os.Getenv("REPO_ROOT"), "swagger")
-	fileserver(router, "/doc", http.Dir(jsonDir))
-
 	srv := &http.Server{
-		Addr:         ":8081",
+		Addr:         ":8000",
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -116,6 +111,6 @@ func main() {
 		}
 	}()
 
-	fmt.Println("Running HTTP server at localhost:8081")
+	fmt.Println("Running HTTP server at localhost:8000")
 	<-sigs
 }

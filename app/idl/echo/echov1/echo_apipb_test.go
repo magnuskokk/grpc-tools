@@ -11,6 +11,7 @@ import (
 	github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
 	proto "github.com/gogo/protobuf/proto"
 	golang_proto "github.com/golang/protobuf/proto"
+	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 	go_parser "go/parser"
 	math "math"
 	math_rand "math/rand"
