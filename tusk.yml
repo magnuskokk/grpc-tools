@@ -13,8 +13,27 @@ options:
       command: id -g
 
 tasks:
-  build-dev-tools:
-    usage: Build the docker containers for tools.
+  env.destroy:
+    usage: Destroy the dev environment.
+    run:
+      - task: docker.destroy
+      - command: sudo rm -rf ./.direnv
+
+  env.reset:
+    usage: Reset and reinstall the dev environment.
+    run:
+      - task: env.destroy
+      - command: sh setup.sh
+
+  docker.destroy:
+    usage: Stop services and do global prune.
+    run:
+      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
+      - command: docker-compose down --remove-orphans
+      - command: docker system prune --volumes -a
+
+  build.dev:
+    usage: Build the docker containers for dev tools.
     run:
       command: >
         docker-compose -f docker-compose.tools.yml build
@@ -24,12 +43,12 @@ tasks:
         --build-arg UID=${uid}
         --build-arg GID=${gid}
 
-  install-dev-deps:
+  install.dev:
     usage: Install development tools.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d gobase
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install-proto-wkt
-      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install-dev-deps
+      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.proto.wkt
+      - command: docker-compose -f docker-compose.tools.yml exec gobase tusk install.dev
 
   protolint:
     usage: Lint protobuf defnitions using prototool.
@@ -45,13 +64,13 @@ tasks:
         docker-compose -f docker-compose.tools.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
-  generate.go:
+  app.generate.go:
     usage: Run all //go:generate directives.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d gobase
       - command: docker-compose -f docker-compose.tools.yml exec gobase tusk generate
 
-  test.go:
+  app.test.go:
     usage: Run all go tests.
     description: |
       Test
@@ -59,7 +78,7 @@ tasks:
       - command: docker-compose -f docker-compose.tools.yml up -d gobase
       - command: docker-compose -f docker-compose.tools.yml exec gobase tusk test
 
-  bench.go:
+  app.bench.go:
     usage: Run all go benchmarks.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d gobase
@@ -71,38 +90,10 @@ tasks:
       - command: tusk -f ./app/tusk.yml clean
       - command: tusk -f ./frontend/tusk.yml clean
       - command: tusk -f ./swagger/tusk.yml clean
-    
-  dockerclean:
-    usage: Reset docker
-    run:
-      - command: docker-compose -f docker-compose.tools.yml down --remove-orphans
-      - command: docker-compose down --remove-orphans
-      - command: docker system prune --volumes -a
+ 
 
-  envclean:
-    usage: Reset the dev environment.
-    description: Removes .direnv and all docker stuff globally on the system.
-    run:
-      - task: dockerclean
-      - command: sudo rm -rf ./.direnv
-
-  serve.echo.dev:
-    usage: Start the echo service server in a fresh container by using docker-compose run.
-    description: Useful for quick development. TODO set some env variables to print extra debug logs orsmth.
-    run:
-      command: >
-        docker-compose -f docker-compose.tools.yml run
-        --rm
-        -u ${uid}:${gid}
-        -v "${pwd}/app:/app"
-        -v "${pwd}/.direnv:/go"
-        -p 8000:8000
-        gobase
-        go run cmd/echo-server/main.go
-
-  serve.echo.prod:
-    usage: Start the echo service server by using compiled and packaged container.
-    description: Run the final production image.
+  serve.echo:
+    usage: Start the echo service gRPC and HTTP server.
     run:
       command: docker-compose up echo-server
 

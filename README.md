@@ -24,21 +24,20 @@ Now that you have the environment loaded, you can run some commands.
 ## Some useful commands
 * `$ tusk protolint`
 * `$ tusk protoc`
-* `$ tusk generate.go`
-* `$ tusk test.go`
+* `$ tusk app.generate.go`
+* `$ tusk app.test.go`
 
-## Run server
-* `$ tusk serve.echo.dev`
+## Build and run the echo server
+* `$ tusk serve.echo`
 * Make sure it's responding: `$ curl 'http://localhost:8000/echo?Message=test'` You should see the same message returned
 
 ## Swagger UI (echo-server must be running beforehand)
 * `$ tusk serve.echo.swagger`
 
-* Open a browser at `http://localhost:8080`.
+* Open a browser at `http://localhost:8080` to see the docs.
 
 ## Reset the dev environment:
-* `$ tusk envclean`
-* `$ ./setup.sh` to setup from scratch.
+* `$ tusk env.reset`
 
 ### VSCode
 direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. This allows installing all go tools in the .direnv directory.
