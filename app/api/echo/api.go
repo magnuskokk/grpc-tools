@@ -1,9 +1,9 @@
 package echo
 
-//go:generate mockgen -destination=mocks/api.go -package=mocks app/idl/echo/v1/echov1 EchoAPIServer
+//go:generate mockgen -destination=mocks/api.go -package=mocks app/idl/echo/echov1 EchoAPIServer
 
 import (
-	//	"app/idl/echo/v1/echov1"
+	"app/idl/echo/echov1"
 	"context"
 )
 
@@ -13,7 +13,8 @@ type API struct {
 
 // Echo returns the same request as a reply.
 func (api *API) Echo(ctx context.Context, req *echov1.EchoRequest) (*echov1.EchoResponse, error) {
+
 	return &echov1.EchoResponse{
-		Message: req.Message,
+		Message: req.GetMessage(),
 	}, nil
 }

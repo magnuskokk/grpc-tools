@@ -1,79 +1,95 @@
 options:
   user:
-    usage: User id to run as.
-    short: u
+    usage: Username to use for base images.
     default:
-      command: id -u
-  pwd:
-    usage: Present working directory.
-    private: true
+      command: id -un
+  uid:
+    usage: User id to use for base images.
     default:
-      command: pwd
+      command: id -u 
+  gid:
+    usage: User group id to use for base images.
+    default:
+      command: id -g
 
 tasks:
   build-dev-tools:
     usage: Build the docker containers for tools.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml build --force-rm --parallel
+        docker-compose -f docker-compose.tools.yml build
+        --force-rm
+        --parallel
+        --build-arg USER=${user}
+        --build-arg UID=${uid}
+        --build-arg GID=${gid}
 
   install-dev-deps:
-    usage: Install development dependencies.
+    usage: Install development tools.
     run:
-      - command: >
-          docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/tools:/app" -v "${pwd}/.direnv:/go" go
-          tusk install
+      - command: docker-compose -f docker-compose.tools.yml up -d go
+      - command: docker-compose -f docker-compose.tools.yml exec go tusk install-proto-wkt
+      - command: docker-compose -f docker-compose.tools.yml exec go tusk install-dev-deps
 
   protolint:
     usage: Lint protobuf defnitions using prototool.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} prototool
+        docker-compose -f docker-compose.tools.yml run -u ${uid} prototool
         prototool lint
 
   protoc:
     usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} prototool
+        docker-compose -f docker-compose.tools.yml run -u ${uid} prototool
         prototool generate
+
+  generate.go:
+    usage: Run all //go:generate directives.
+    run:
+      - command: docker-compose -f docker-compose.tools.yml up -d go
+      - command: docker-compose -f docker-compose.tools.yml exec go tusk generate
 
   test.go:
     usage: Run all go tests.
     description: |
       Test
     run:
-      command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
-        tusk test
+      - command: docker-compose -f docker-compose.tools.yml up -d go
+      - command: docker-compose -f docker-compose.tools.yml exec go tusk test
 
   bench.go:
     usage: Run all go benchmarks.
     run:
-     command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
-        tusk bench
+      - command: docker-compose -f docker-compose.tools.yml up -d go
+      - command: docker-compose -f docker-compose.tools.yml exec go tusk bench
 
   clean:
     usage: Remove all generated files.
     run:
-      - command: >
-          docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
-          tusk clean
+      - command: tusk -f ./app/tusk.yml clean
       - command: tusk -f ./frontend/tusk.yml clean
       - command: tusk -f ./swagger/tusk.yml clean
     
+  dockerclean:
+    usage: Reset docker
+    run:
+      - command: docker-compose -f docker-compose.tools.yml down
+      - command: docker system prune --volumes -a
+
   envclean:
     usage: Reset the dev environment.
+    description: Run ./setup.sh after cleaning.
     run:
+      - task: dockerclean
       - command: sudo rm -rf ./.direnv
-      - command: docker system prune --volumes -a
 
   serve-echo:
     usage: Start the echo service server.
     run:
       command: >
-        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" go
+        docker-compose -f docker-compose.tools.yml run -u ${user} -v "${pwd}/app:/app" -v "${pwd}/.direnv:/go" -p 8081:8081 go
         go run cmd/echo-server/main.go
 
   serve-doc:

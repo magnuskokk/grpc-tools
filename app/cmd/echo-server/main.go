@@ -2,7 +2,7 @@ package main
 
 import (
 	"app/api/echo"
-	//	"app/idl/echo/v1/echov1"
+	"app/idl/echo/echov1"
 	"context"
 	"fmt"
 	"log"
@@ -63,7 +63,7 @@ func main() {
 	defer lis.Close()
 
 	s := grpc.NewServer()
-	echov1.RegisterEchoAPIServer(s, &echo.EchoAPI{})
+	echov1.RegisterEchoAPIServer(s, &echo.API{})
 	defer s.Stop()
 
 	go func() {
@@ -82,7 +82,7 @@ func main() {
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 	// Connect to the gRPC server.
-	err = echopb.RegisterEchoAPIHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
+	err = echov1.RegisterEchoAPIHandlerFromEndpoint(ctx, mux, "localhost:9000", opts)
 	if err != nil {
 		glog.Fatal(err)
 	}

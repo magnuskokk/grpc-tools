@@ -2,7 +2,7 @@ package echo_test
 
 import (
 	"app/api/echo/mocks"
-	. "app/idl/echo/v1/echov1"
+	. "app/idl/echo/echov1"
 	"app/pkg/testconn"
 	context "context"
 	"encoding/json"
@@ -26,8 +26,7 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		mockCtrl      *gomock.Controller
 		mockAPIServer *mocks.MockEchoAPIServer
 
-		testServer   *httptest.Server
-		testResponse *EchoResponse
+		testServer *httptest.Server
 	)
 
 	BeforeEach(func() {
@@ -51,10 +50,6 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		var err error
 		testServer, err = testconn.NewGatewayTestServer(ctx, buf, RegisterEchoAPIHandlerFromEndpoint)
 		Expect(err).To(BeNil())
-
-		testResponse = &EchoResponse{
-			Message: "test",
-		}
 	})
 
 	JustAfterEach(func() {
@@ -69,7 +64,7 @@ var _ = Describe("HTTP server and client for echo service", func() {
 					Echo(
 						gomock.Any(),
 						gomock.AssignableToTypeOf(&EchoRequest{}),
-					).Return(testResponse, nil)
+					).Return(&EchoResponse{Message: "test"}, nil)
 			})
 
 			It("returns test reply", func() {

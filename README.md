@@ -1,6 +1,6 @@
 # GRPC tools
 
-Playground repo for gRPC. Example roughly based on https://github.com/gogo/grpc-example
+Tools for full-stack gRPC service generation. This project aims to set up an opinionated environment for proto web development, explore the possibilities of generating full-stack systems and minimize actual code writing.
 
 
 ## Required packages for development
@@ -23,6 +23,7 @@ direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac
 ## Some useful commands
 * `$ tusk protolint`
 * `$ tusk protoc`
+* `$ tusk generate.go`
 * `$ tusk test.go`
 
 ## Run server

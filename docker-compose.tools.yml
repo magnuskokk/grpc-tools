@@ -2,10 +2,17 @@ version: '3.7'
 
 services:
   go:
+    container_name: go
     build: 
       context: ./docker/go
       dockerfile: Dockerfile
-    container_name: go
+      args:
+        - USER
+        - UID
+        - GID
+    volumes:
+     - ./app:/app
+     - ./.direnv:/go
     working_dir: /app
     stdin_open: yes
     tty: yes

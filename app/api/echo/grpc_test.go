@@ -2,7 +2,7 @@ package echo_test
 
 import (
 	"app/api/echo/mocks"
-	. "app/idl/echo/v1/echov1"
+	. "app/idl/echo/echov1"
 	"app/pkg/testconn"
 	context "context"
 	"errors"
@@ -56,13 +56,13 @@ var _ = Describe("gRPC server and client for echo service", func() {
 					Echo(
 						gomock.Any(),
 						gomock.AssignableToTypeOf(&EchoRequest{}),
-					).Return(&EchoResponse{}, nil)
+					).Return(&EchoResponse{Message: "test"}, nil)
 			})
 
 			It("returns test reply", func() {
 				reply, err := client.Echo(context.TODO(), &EchoRequest{})
-				Expect(reply).To(BeAssignableToTypeOf(&EchoResponse{}))
 				Expect(err).To(BeNil())
+				Expect(reply.GetMessage()).To(Equal("test"))
 			})
 		})
 

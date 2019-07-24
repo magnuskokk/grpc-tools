@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "idl/echo/v1/echo_api.proto",
+    "title": "idl/echo/echov1/echo_api.proto",
     "version": "version not set"
   },
   "schemes": [
