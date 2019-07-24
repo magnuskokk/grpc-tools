@@ -28,6 +28,7 @@ Now that you have the environment loaded, you can run some commands.
 * `$ tusk protoc`
 * `$ tusk app.generate.go`
 * `$ tusk app.test.go`
+* `$ tusk app.bench.go`
 
 ## Build and run the echo server
 * `$ tusk serve.echo`
