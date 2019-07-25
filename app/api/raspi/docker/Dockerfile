@@ -7,12 +7,12 @@ RUN go mod download
 
 FROM buildable AS build
 ENV GOOS=linux
-RUN go build -a -o bin/echo-server cmd/echo-server/main.go
-RUN chmod +x bin/echo-server
+RUN go build -a -o bin/raspi-server cmd/raspi-server/main.go
+RUN chmod +x bin/raspi-server
 
 
 FROM alpine:3.10.1
 LABEL maintainer=magnuskokk
-COPY --from=build /build/bin/echo-server /echo-server/echo-server
+COPY --from=build /build/bin/raspi-server /raspi-server/raspi-server
 EXPOSE 8000
-CMD ["/echo-server/echo-server"]
+CMD ["/raspi-server/raspi-server"]

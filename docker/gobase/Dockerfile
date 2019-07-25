@@ -20,7 +20,8 @@ RUN addgroup --gid "$GID" "$USER" \
     "$USER"
 
 RUN mkdir -p ${APP_PATH} \
-    && chown -R ${UID}:${GID} ${APP_PATH}
+    && chown -R ${UID}:${GID} ${APP_PATH} \
+    && chown -R ${UID}:${GID} /go
 
 WORKDIR ${APP_PATH}
 

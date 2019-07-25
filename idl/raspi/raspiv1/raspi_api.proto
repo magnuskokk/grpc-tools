@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package app.raspi.v1;
+
+option go_package = "raspiv1";
+
+import "protoc-gen-swagger/options/annotations.proto";
+import "google/api/annotations.proto";
+import "gogo.proto";
+import "idl/raspi/raspiv1/types.proto";
+
+// All gogoproto extensions: https://github.com/gogo/protobuf/blob/master/extensions.md
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.equal_all) = true;
+
+// needed for generated tests
+option (gogoproto.populate_all) = true;
+option (gogoproto.testgen_all) = true;
+option (gogoproto.benchgen_all) = true;
+
+// Enable registration with golang/protobuf for the grpc-gateway.
+option (gogoproto.goproto_registration) = true;
+
+// Enable generation of XXX_MessageName methods for grpc-go/status.
+option (gogoproto.messagename_all) = true;
+
+// TODO make custom options
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  // actual server for "Try out" feature
+  host: "localhost:8001";
+  // base_path: "/api";
+  external_docs: {
+    url: "https://github.com/magnuskokk/grpc-tools";
+    description: "Development environment and tools for full-stack gRPC service generation.";
+  }
+  schemes: HTTP;
+};
+
+// RaspiAPI.
+service RaspiAPI {
+  // Stream temperature data.
+  rpc TempStream(TempStreamRequest) returns (stream TempStreamResponse) {
+    option (google.api.http) = {
+      get: "/temp"
+    };
+  }
+
+  // Fetch radiator data.
+  rpc Radiator(RadiatorRequest) returns (RadiatorResponse) {
+    option (google.api.http) = {
+      get: "/radiator"
+    };
+  }
+
+  // Set radiator.
+  rpc SetRadiator(SetRadiatorRequest) returns (SetRadiatorResponse) {
+    option (google.api.http) = {
+      post: "/radiator"
+    };
+  }
+
+  // Get status of whole system.
+  rpc Status(StatusRequest) returns (StatusResponse) {
+    option (google.api.http) = {
+      get: "/status"
+    };
+  }
+}
+
+message TempStreamRequest {}
+message TempStreamResponse {
+  app.raspi.v1.Temperature temp = 1;
+}
+
+message RadiatorRequest {}
+message RadiatorResponse {
+  app.raspi.v1.Radiator radi = 1;
+}
+message SetRadiatorRequest {
+  app.raspi.v1.Radiator radi = 1;
+}
+message SetRadiatorResponse {
+  app.raspi.v1.Radiator radi = 1;
+}
+
+message StatusRequest {}
+message StatusResponse {
+  app.raspi.v1.Status status = 1;
+}

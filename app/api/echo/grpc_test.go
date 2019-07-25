@@ -3,6 +3,7 @@ package echo_test
 import (
 	"app/api/echo/mocks"
 	. "app/idl/echo/echov1"
+	"app/pkg/server"
 	"app/pkg/testconn"
 	context "context"
 	"errors"
@@ -36,12 +37,22 @@ var _ = Describe("gRPC server and client for echo service", func() {
 		register := func(s *grpc.Server) {
 			RegisterEchoAPIServer(s, mockAPIServer)
 		}
-		go testconn.StartGRPCTestServer(ctx, buf, register)
+		go server.StartGRPCServer(ctx, buf.Listener, register)
 
 		newClient := func(c *grpc.ClientConn) interface{} {
 			return NewEchoAPIClient(c)
 		}
-		client = testconn.NewGRPCTestClient(ctx, buf, newClient).(EchoAPIClient)
+		cl, err := server.NewGRPCClient(&server.ClientOptions{
+			Ctx:           ctx,
+			Addr:          "bufnet",
+			Dialer:        buf.DialContext,
+			ClientFactory: newClient,
+		})
+		Expect(err).To(BeNil())
+
+		var ok bool
+		client, ok = cl.(EchoAPIClient)
+		Expect(ok).To(BeTrue())
 	})
 
 	JustAfterEach(func() {

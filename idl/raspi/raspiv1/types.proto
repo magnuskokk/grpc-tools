@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package app.raspi.v1;
+
+option go_package = "raspiv1";
+
+import "gogo.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.protosizer_all) = false;
+option (gogoproto.equal_all) = true;
+
+// needed for generated tests
+option (gogoproto.populate_all) = true;
+option (gogoproto.testgen_all) = true;
+option (gogoproto.benchgen_all) = true;
+
+// Enable registration with golang/protobuf for the grpc-gateway.
+option (gogoproto.goproto_registration) = true;
+
+// Enable generation of XXX_MessageName methods for grpc-go/status.
+option (gogoproto.messagename_all) = true;
+
+// Temperature reading.
+message Temperature {
+  sint32 reading = 1;
+}
+
+// Radiator data.
+message Radiator {
+  bool enabled = 1;
+  uint32 level = 2;
+}
+
+// Combined status.
+message Status {
+  Temperature temperature = 1;
+  Radiator radiator = 2;
+}

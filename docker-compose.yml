@@ -8,3 +8,11 @@ services:
       dockerfile: api/echo/docker/Dockerfile
     ports:
       - 8000:8000
+
+  raspi-server:
+    image: grpc-tools/raspi-server
+    build: 
+      context: ./app/
+      dockerfile: api/raspi/docker/Dockerfile
+    ports:
+      - 8001:8001

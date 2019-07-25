@@ -3,18 +3,20 @@ package echo_test
 import (
 	"app/api/echo/mocks"
 	. "app/idl/echo/echov1"
+	"app/pkg/server"
 	"app/pkg/testconn"
 	context "context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 
+	"github.com/golang/glog"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
 	grpc "google.golang.org/grpc"
 )
 
@@ -38,17 +40,27 @@ var _ = Describe("HTTP server and client for echo service", func() {
 
 		buf := testconn.NewBufNet()
 
+		register := func(s *grpc.Server) {
+			RegisterEchoAPIServer(s, mockAPIServer)
+		}
+
 		go func() {
-			register := func(s *grpc.Server) {
-				RegisterEchoAPIServer(s, mockAPIServer)
-			}
-			if err := testconn.StartGRPCTestServer(ctx, buf, register); err != nil {
-				log.Fatal(err)
+			if err := server.StartGRPCServer(ctx, buf.Listener, register); err != nil {
+				glog.Fatal(err)
 			}
 		}()
 
+		dialOpts := []grpc.DialOption{
+			grpc.WithContextDialer(buf.DialContext),
+			grpc.WithInsecure(),
+		}
+
 		var err error
-		testServer, err = testconn.NewGatewayTestServer(ctx, buf, RegisterEchoAPIHandlerFromEndpoint)
+		testServer, err = server.NewGatewayTestServer(ctx, &server.GatewayOptions{
+			ServeAddr: "bufnet",
+			DialOpts:  dialOpts,
+			Register:  RegisterEchoAPIHandlerFromEndpoint,
+		})
 		Expect(err).To(BeNil())
 	})
 

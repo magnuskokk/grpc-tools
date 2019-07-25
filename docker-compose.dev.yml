@@ -3,7 +3,7 @@ version: '3.7'
 services:
   # base go image for running development related tasks
   gobase:
-    image: grpc-tools/gobase:devenv
+    image: grpc-tools/gobase
     build: 
       context: ./docker/gobase
       dockerfile: Dockerfile

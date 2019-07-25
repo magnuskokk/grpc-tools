@@ -1,16 +1,11 @@
 tasks:
-  install:
-    usage: Compile and install go services to $GOPATH/bin.
-    run:
-      command: go install -v ./...
-
   install.proto.wkt:
     usage: Install Well-Known Types and various other .proto sources.
     run:
       - set-environment:
           GO111MODULE: off
       - command: >
-          go get -v
+          go get -d -v
           github.com/gogo/protobuf/...
           github.com/gogo/googleapis/...
           github.com/grpc-ecosystem/grpc-gateway/...
@@ -18,12 +13,16 @@ tasks:
   install.dev:
     usage: Install go dev deps
     run:
-      - task: install.proto.wkt
       - set-environment:
           GO111MODULE: on
       - command: go get -v golang.org/x/tools/go/packages
       - command: go get -v github.com/golang/mock/gomock
       - command: go install -v github.com/golang/mock/mockgen
+
+  install:
+    usage: Compile and install go services to $GOPATH/bin.
+    run:
+      command: go install -v ./...
 
   generate:
     usage: Run //go:generate directives.
@@ -48,7 +47,12 @@ tasks:
     run:
       command: go test -run=xxx -bench=. ./...
 
-  serve.echo.dev:
+  serve.echo.local:
     usage: Run the echo server locally.
     run:
       command: go run cmd/echo-server/main.go
+
+  serve.raspi.local:
+    usage: Run the raspi server locally.
+    run:
+      command: go run cmd/raspi-server/main.go

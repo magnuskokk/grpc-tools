@@ -7,7 +7,6 @@ protoc:
     - /direnv/src/github.com/gogo/googleapis
     - /direnv/src/github.com/gogo/protobuf/protobuf
     - /direnv/src/github.com/gogo/protobuf/gogoproto
-    - /work
 
   #file_header:
   #  content: |

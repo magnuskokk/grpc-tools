@@ -25,19 +25,7 @@ tasks:
       - task: docker.down
       - command: docker system prune --volumes -a
 
-  env.destroy:
-    usage: Destroy the dev environment.
-    run:
-      - task: docker.destroy
-      - command: rm -rf ./.direnv
-
-  env.reset:
-    usage: Reset and reinstall the dev environment.
-    run:
-      - task: env.destroy
-      - command: sh setup.sh
-
-  build.dev:
+  env.build:
     usage: Build the docker containers for dev tools.
     description: Called by setup.sh.
     run:
@@ -49,13 +37,25 @@ tasks:
         --build-arg UID=${uid}
         --build-arg GID=${gid}
 
-  install.dev:
+  env.install:
     usage: Install development tools.
     description: Called by setup.sh.
     run:
       - command: docker-compose -f docker-compose.dev.yml up -d gobase
       - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.proto.wkt
       - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.dev
+
+  env.destroy:
+    usage: Destroy the dev environment with global docker prune.
+    run:
+      - task: docker.destroy
+      - command: rm -rf ./.direnv
+
+  env.reset:
+    usage: Reset and reinstall the dev environment.
+    run:
+      - task: env.destroy
+      - command: sh setup.sh
 
   protolint:
     usage: Lint protobuf definitions using prototool.
@@ -77,6 +77,13 @@ tasks:
       - command: docker-compose -f docker-compose.dev.yml up -d gobase
       - command: docker-compose -f docker-compose.dev.yml exec gobase tusk generate
 
+  clean:
+    usage: Remove all generated files.
+    run:
+      - command: tusk -f ./app/tusk.yml clean
+      - command: tusk -f ./frontend/tusk.yml clean
+      - command: tusk -f ./swagger/tusk.yml clean
+
   app.test.go:
     usage: Run all go tests.
     description: |
@@ -91,13 +98,6 @@ tasks:
       - command: docker-compose -f docker-compose.dev.yml up -d gobase
       - command: docker-compose -f docker-compose.dev.yml exec gobase tusk bench
 
-  clean:
-    usage: Remove all generated files.
-    run:
-      - command: tusk -f ./app/tusk.yml clean
-      - command: tusk -f ./frontend/tusk.yml clean
-      - command: tusk -f ./swagger/tusk.yml clean
- 
   serve.echo:
     usage: Start the echo service gRPC and HTTP server.
     run:
@@ -106,14 +106,34 @@ tasks:
   serve.echo.local:
     usage: Start echo dev server in debug mode.
     run:
-      command: tusk -f ./app/tusk.yml serve.echo
+      command: tusk -f ./app/tusk.yml serve.echo.local
 
   serve.echo.swagger:
-    usage: Start the swagger UI
+    usage: Start the swagger UI for echo service
     run:
       command: >
         docker-compose -f docker-compose.dev.yml run 
         -e SWAGGER_JSON=/docs/idl/echo/echov1/echo_api.swagger.json
+        --rm
+        --service-ports
+        swaggerui
+
+  serve.raspi:
+    usage: Start the raspi service gRPC and HTTP server.
+    run:
+      command: docker-compose up raspi-server
+
+  serve.raspi.local:
+    usage: Start the raspi dev server in debug mode
+    run:
+      command: tusk -f ./app/tusk.yml serve.raspi.local
+  
+  serve.raspi.swagger:
+    usage: Start the swagger UI for raspi service
+    run:
+      command: >
+        docker-compose -f docker-compose.dev.yml run 
+        -e SWAGGER_JSON=/docs/idl/raspi/raspiv1/raspi_api.swagger.json
         --rm
         --service-ports
         swaggerui
