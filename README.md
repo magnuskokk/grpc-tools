@@ -4,9 +4,34 @@ This project aims to set up an opinionated environment for protobuf based web de
 
 ## Ideas
 
-Imagine you have a custom home automation device (raspi with a temperature sensor and a cat feeder). Define a proto `TempStreamRequest` and `TempStreamPacketResponse` for temperature data, write a glue API to read the sensor and write into stream and you have already generated a realtime monitoring dashboard and time series database using Grafana and Prometheus.
+Imagine you have a custom home automation device (raspi with a temperature sensor and a radiator). It may have its own internal logic to turn on/off the heat based on indoor temperature but that's not important here. We need to remotely see if everything's working and intervene if needed.
 
-For the cat feeder, you could write a simple config for "actions" that are actually default values for proto calls. For example you could define your proto like `CommandRequest` and have the real command inside or even separately like `CatFeedRequest`. Again some glue code to really call the cat feeder. Now you should have a control panel with buttons for each command.
+Example proto for the device:
+```protobuf
+service HomeAPI {
+    rpc GetTempStream(Empty) returns (stream Temperature) {}
+    rpc GetRadiator(Empty) returns (Radiator) {}
+    rpc SetRadiator(Radiator) returns (Radiator) {}
+    rpc GetStatus(Empty) returns (Status) {}
+}
+  
+message Empty {}
+
+message Temperature {
+    required sint32 reading = 1;
+}
+
+message Radiator {
+    required bool on = 1;
+    required uint32 level = 2;
+}
+
+message Status {
+    required Temperature temp = 1;
+    required Radiator radi = 2;
+}
+```
+
 
 ## Required packages for development
 * `direnv`
