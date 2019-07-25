@@ -1,6 +1,12 @@
 # Development environment and tools for full-stack gRPC service generation.
 
-This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype full-stack monitoring and control panel systems for abstract devices. Final goal would be to generate disk images of docker swarm mode Raspberry Pi cluster nodes.
+This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype remote monitoring and control panel systems for abstract devices.
+
+## Ideas
+
+Imagine you have a custom home automation device (raspi with a temperature sensor and a cat feeder). Define a proto `TempStreamRequest` and `TempStreamPacketResponse` for temperature data, write glue code to read the sensor and write into stream and you have already generated a realtime monitoring dashboard and time series database using Grafana and Prometheus.
+
+For the cat feeder, you could write a simple config for "actions" that are actually default values for proto calls. For example you could define your proto like `CommandRequest` and have the real command inside or even separately like `CatFeedRequest`. Again some glue code to really call the cat feeder. Now you should have a control panel with buttons for each command.
 
 ## Required packages for development
 * `direnv`
