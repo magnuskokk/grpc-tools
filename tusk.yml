@@ -110,7 +110,6 @@ tasks:
 
   serve.echo.swagger:
     usage: Start the swagger UI
-    description: TODO not working yet
     run:
       command: >
         docker-compose -f docker-compose.dev.yml run 
