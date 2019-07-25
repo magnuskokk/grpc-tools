@@ -18,17 +18,17 @@ service HomeAPI {
 message Empty {}
 
 message Temperature {
-    required sint32 reading = 1;
+    sint32 reading = 1;
 }
 
 message Radiator {
-    required bool on = 1;
-    required uint32 level = 2;
+    bool on = 1;
+    uint32 level = 2;
 }
 
 message Status {
-    required Temperature temp = 1;
-    required Radiator radi = 2;
+    Temperature temp = 1;
+    Radiator radi = 2;
 }
 ```
 
