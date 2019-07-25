@@ -29,7 +29,7 @@ tasks:
     usage: Destroy the dev environment.
     run:
       - task: docker.destroy
-      - command: sudo rm -rf ./.direnv
+      - command: rm -rf ./.direnv
 
   env.reset:
     usage: Reset and reinstall the dev environment.
