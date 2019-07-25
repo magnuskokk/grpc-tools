@@ -4,7 +4,7 @@
     "title": "idl/echo/echov1/echo_api.proto",
     "version": "1.0"
   },
-  "host": "localhost:8080",
+  "host": "localhost:8000",
   "schemes": [
     "http"
   ],
@@ -52,7 +52,7 @@
     }
   },
   "externalDocs": {
-    "description": "gRPC tools and generation",
+    "description": "Development environment and tools for full-stack gRPC service generation.",
     "url": "https://github.com/magnuskokk/grpc-tools"
   }
 }

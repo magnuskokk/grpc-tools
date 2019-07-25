@@ -13,11 +13,16 @@ options:
       command: id -g
 
 tasks:
-  docker.destroy:
-    usage: Stop services and do global prune.
+  docker.down:
+    usage: Stop all containers.
     run:
       - command: docker-compose -f docker-compose.dev.yml down --remove-orphans
       - command: docker-compose down --remove-orphans
+
+  docker.destroy:
+    usage: Stop services and do global prune.
+    run:
+      - task: docker.down
       - command: docker system prune --volumes -a
 
   env.destroy:
@@ -108,4 +113,8 @@ tasks:
     description: TODO not working yet
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm --service-ports echo-swagger
+        docker-compose -f docker-compose.dev.yml run 
+        -e SWAGGER_JSON=/docs/idl/echo/echov1/echo_api.swagger.json
+        --rm
+        --service-ports
+        swaggerui

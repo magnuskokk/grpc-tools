@@ -28,11 +28,10 @@ services:
     stdin_open: yes
     tty: yes
 
-  # serve static api doc json files from ./swagger
-  # TODO swagger ui
-  docserver:
-    image: nginx
+  # serve the swagger doc viewer
+  swaggerui:
+    image: swaggerapi/swagger-ui
     volumes:
-      - ./swagger:/usr/share/nginx/html:ro
+      - ./swagger:/docs
     ports:
-      - 8081:80
+      - 8080:8080

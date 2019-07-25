@@ -32,11 +32,10 @@ Now that you have the environment loaded, you can run some commands.
 
 ## Build and run the echo server
 * `$ tusk serve.echo`
-* Or start locally: `$ cd app; go run cmd/echo-server/main.go`
-* Make sure it's responding: `$ curl 'http://localhost:8000/echo?Message=test'` You should see the same message returned
+* Or start locally: `$ cd app; tusk serve.echo.dev`
+* Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` You should see the same message returned
 
-## Swagger UI (echo-server must be running beforehand to enable the try out feature)
-### TODO needs development
+## Swagger UI (echo server must be running beforehand to enable the try out feature)
 * `$ tusk serve.echo.swagger`
 
 * Open a browser at `http://localhost:8080` to see the docs.

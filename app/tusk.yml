@@ -48,7 +48,7 @@ tasks:
     run:
       command: go test -run=xxx -bench=. ./...
 
-  serve.echo:
+  serve.echo.dev:
     usage: Run the echo server locally.
     run:
       command: go run cmd/echo-server/main.go
