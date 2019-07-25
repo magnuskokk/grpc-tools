@@ -32,7 +32,6 @@ message Status {
 }
 ```
 
-
 ## Required packages for development
 * `direnv`
 * `docker-compose`
