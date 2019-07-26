@@ -1,4 +1,4 @@
-# Development environment and tools for full-stack gRPC service generation.
+# Dockerized Development Environment and Tools for full-stack gRPC service generation.
 
 This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype remote monitoring and control panel systems for abstract devices.
 
