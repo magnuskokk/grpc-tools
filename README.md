@@ -3,7 +3,7 @@
 This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype remote monitoring and control panel systems for abstract devices.
 
 ## Ideas
-This project is inspired by https://github.com/gogo/grpc-example and https://github.com/uber/prototool to lint and generate protos.
+This project is inspired by https://github.com/gogo/grpc-example and uses https://github.com/uber/prototool to lint and generate protos.
 
 Imagine you have a custom home automation device (raspi with a temperature sensor and a radiator). It may have its own internal logic to turn on/off the heat based on indoor temperature but that's not important here. We need to remotely see if everything's working and intervene if needed.
 
