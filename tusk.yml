@@ -49,6 +49,15 @@ tasks:
       - task: docker.cleanimages
       - task: docker.cleanvolumes
 
+  env.reset:
+    usage: Reset and rebuild the dev environment.
+    run:
+      - task: docker.cleanall
+      # sudo hack there is a docker issue in golocal
+      - command: sudo rm -rf .direnv
+      - command: sh install-tusk.sh
+      - command: tusk env.build
+
   env.build:
     usage: Build the docker containers for dev tools.
     run:
@@ -61,25 +70,19 @@ tasks:
         --build-arg GID=${gid}
         golocal
 
-  env.reset:
-    usage: Reset and rebuild the dev environment.
-    run:
-      - task: docker.cleanall
-      # sudo hack there is a docker issue in golocal
-      - command: sudo rm -rf .direnv
-      - command: sh install-tusk.sh
-      - command: tusk env.build
-
   gen.install.tools:
     usage: Install tools and dependencies for dealing with protobuf linting and generation.
-    description: Downloads a lot of packages.
+    description: Not necessary for building, only for development. All generated files are included in the repo.
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d golocal
-      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk install.tools
-      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk install.proto.wkt
+      - command: >
+          docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+          tusk install.tools
+      - command: >
+          docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+          tusk install.proto.wkt
 
   gen.protolint:
-    usage: Lint protobuf definitions using prototool.
+    usage: Lint all protobuf definitions using prototool.
     run:
       command: >
         docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
@@ -95,8 +98,9 @@ tasks:
   gen.app.go:
     usage: Run all //go:generate directives in ./app.
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d golocal
-      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk generate
+      command: >
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        tusk generate
 
   gen.clean:
     usage: Remove all generated files.
@@ -107,37 +111,26 @@ tasks:
 
   app.test:
     usage: Run all go tests in ./app.
-    description: |
-      Test
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d golocal
-      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk test
+      command: >
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        tusk test
 
   app.bench:
-    usage: Run all go benchmarks.
+    usage: Run all go benchmarks in ./app.
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d golocal
-      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk bench
+      command: >
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        tusk bench
 
   stack.build:
-    usage: Build stack.
+    usage: Build full stack.
     run:
-      - command: >
-          docker-compose -f docker-compose.dev.yml build
-          --force-rm
-          --build-arg USER=${user}
-          --build-arg GROUP=${group}
-          --build-arg UID=${uid}
-          --build-arg GID=${gid}
-          gobuild
+      - command: docker-compose -f docker-compose.dev.yml build gobuild
       - command: >
           docker-compose build
           --force-rm
           --parallel
-          --build-arg USER=${user}
-          --build-arg GROUP=${group}
-          --build-arg UID=${uid}
-          --build-arg GID=${gid}
           echo-server
           raspi-server
           metrics-server
