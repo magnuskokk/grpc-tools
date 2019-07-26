@@ -18,45 +18,39 @@ options:
 
 tasks:
   docker.down:
-    usage: Stop all containers.
+    usage: Stop all containers. All docker.* commands include only services defined in docker-compose files.
     run:
       - command: docker-compose -f docker-compose.dev.yml down
       - command: docker-compose down
 
   docker.cleancontainers:
-    usage: Remove all local containers, images and any anonymous volumes attached to containers.
+    usage: Stop and remove all containers, images and any anonymous volumes attached to containers.
     run:
       - command: docker-compose -f docker-compose.dev.yml rm --stop --force -v
       - command: docker-compose rm --stop --force -v
 
   docker.cleanimages:
-    usage: Stop all containers and remove all images used by any defined services.
+    usage: Stop all containers and remove all images.
     run:
       - command: docker-compose -f docker-compose.dev.yml down --rmi all
       - command: docker-compose down --rmi all
 
   docker.cleanvolumes:
-    usage: Stop and clean all local volumes.
+    usage: Stop and remove all volumes.
     run:
       - command: docker-compose -f docker-compose.dev.yml down -v
       - command: docker-compose down -v
 
   docker.cleanall:
-    usage: Clean all all docker stuff for services.
+    usage: Stop and remove everything related to services defined in docker-compose files.
     run:
+      - task: docker.down
       - task: docker.cleancontainers
       - task: docker.cleanimages
       - task: docker.cleanvolumes
 
-  env.clean:
-    usage: Clean the environment including docker containers but keep images and named volumes.
-    run:
-      - task: docker.cleancontainers
-      - command: rm -rf ./.direnv
-
   env.build:
     usage: Build the docker containers for dev tools.
-    description: Called by setup.sh.
     run:
       command: >
         docker-compose -f docker-compose.dev.yml build
@@ -65,15 +59,19 @@ tasks:
         --build-arg GROUP=${group}
         --build-arg UID=${uid}
         --build-arg GID=${gid}
+        golocal
 
   env.reset:
     usage: Reset and rebuild the dev environment.
     run:
-      - task: env.clean
-      - command: sh setup.sh
+      - task: docker.cleanall
+      # sudo hack there is a docker issue in golocal
+      - command: sudo rm -rf .direnv
+      - command: sh install-tusk.sh
+      - command: tusk env.build
 
-  env.install.tools:
-    usage: Install tools and dependencies for generating code.
+  gen.install.tools:
+    usage: Install tools and dependencies for dealing with protobuf linting and generation.
     description: Downloads a lot of packages.
     run:
       - command: docker-compose -f docker-compose.dev.yml up -d golocal
@@ -94,8 +92,8 @@ tasks:
         docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
-  gen.go:
-    usage: Run all //go:generate directives.
+  gen.app.go:
+    usage: Run all //go:generate directives in ./app.
     run:
       - command: docker-compose -f docker-compose.dev.yml up -d golocal
       - command: docker-compose -f docker-compose.dev.yml exec golocal tusk generate
@@ -108,7 +106,7 @@ tasks:
       - command: tusk -f ./swagger/tusk.yml clean
 
   app.test:
-    usage: Run all go tests.
+    usage: Run all go tests in ./app.
     description: |
       Test
     run:
@@ -120,12 +118,6 @@ tasks:
     run:
       - command: docker-compose -f docker-compose.dev.yml up -d golocal
       - command: docker-compose -f docker-compose.dev.yml exec golocal tusk bench
-
-  monitor.grafana:
-    usage: Start Grafana.
-    description: at localhost:3000
-    run:
-      - command: docker-compose -f docker-compose.yml up grafana
 
   stack.build:
     usage: Build stack.

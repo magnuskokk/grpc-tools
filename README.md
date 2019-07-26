@@ -3,10 +3,13 @@
 This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype remote monitoring and control panel systems for abstract devices.
 
 ## Ideas
+This project is inspired by https://github.com/gogo/grpc-example and https://github.com/uber/prototool to lint and generate protos.
 
 Imagine you have a custom home automation device (raspi with a temperature sensor and a radiator). It may have its own internal logic to turn on/off the heat based on indoor temperature but that's not important here. We need to remotely see if everything's working and intervene if needed.
 
-Example proto from `idl/raspi/raspiv1/types.proto`:
+The next idea would be to research how to generate Prometheus and Grafana provisioning scripts using a custom protoc plugin and custom annotations.
+
+Example proto proto based on a real service from `idl/raspi/raspiv1`
 ```protobuf
 message Temperature {
   sint32 reading = 1;
@@ -32,15 +35,16 @@ message Status {
 * `$ cd grpc-tools`
 * Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
 * `$ direnv allow .` to load local environment variables from .envrc.
-* `$ ./setup.sh` to set up the local dev environment.
-
-### Optionally install tools for code generation.
-* `$ tusk env.install.generate`
+* `$ ./install-tusk.sh` to install the task runner.
 
 ## Project layout
 It is possible to run commands through the root `tusk.yml` file using docker or locally by manually using `app/tusk.yml` if you have a local go installation.
 
-All proto services are defined in `./idl/{servicename}/{servicename}{version}`. The generated go package for each service is `app/idl/{servicename}/{servicename}{version}`. A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`
+All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
+
+A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`.
+
+Servers are defined in `docker-compose.yml` and `app/cmd`. The implementations are in `app/api/{name}`
 
 Now that you have the environment loaded, you can run some commands. There are two example services `raspi` and `echo`.
 
@@ -49,21 +53,19 @@ Now that you have the environment loaded, you can run some commands. There are t
 ```
 Tasks:
    app.bench               Run all go benchmarks.
-   app.test                Run all go tests.
-   docker.cleanall         Clean all all docker stuff for services.
-   docker.cleancontainers  Remove all local containers, images and any anonymous volumes attached to containers.
-   docker.cleanimages      Stop all containers and remove all images used by any defined services.
-   docker.cleanvolumes     Stop and clean all local volumes.
-   docker.down             Stop all containers.
+   app.test                Run all go tests in ./app.
+   docker.cleanall         Stop and remove everything related to services defined in docker-compose files.
+   docker.cleancontainers  Stop and remove all containers, images and any anonymous volumes attached to containers.
+   docker.cleanimages      Stop all containers and remove all images.
+   docker.cleanvolumes     Stop and remove all volumes.
+   docker.down             Stop all containers. All docker.* commands include only services defined in docker-compose files.
    env.build               Build the docker containers for dev tools.
-   env.clean               Clean the environment including docker containers but keep images and named volumes.
-   env.install.tools       Install tools and dependencies for generating code.
    env.reset               Reset and rebuild the dev environment.
+   gen.app.go              Run all //go:generate directives in ./app.
    gen.clean               Remove all generated files.
-   gen.go                  Run all //go:generate directives.
+   gen.install.tools       Install tools and dependencies for dealing with protobuf linting and generation.
    gen.protoc              Generate gRPC server, client, gateway, typescript and swagger for all services.
    gen.protolint           Lint protobuf definitions using prototool.
-   monitor.grafana         Start Grafana.
    stack.build             Build stack.
    stack.down              Stop the stack.
    stack.up                Start the stack.

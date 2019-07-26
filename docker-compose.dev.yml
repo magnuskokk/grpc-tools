@@ -13,9 +13,6 @@ x-go:
   working_dir: /app
   stdin_open: yes
   tty: yes
-  volumes: 
-    - ./app:/app
-    - ./.direnv:/go
 
 services:
   golocal:
@@ -25,6 +22,9 @@ services:
       context: ./app
       dockerfile: docker/golocal/Dockerfile
       <<: *build-args
+    volumes: 
+    - ./app:/app
+    - ./.direnv:/go
 
   gobuild:
     <<: *go

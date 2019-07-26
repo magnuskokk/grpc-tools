@@ -5,7 +5,7 @@ services:
     image: grpc-tools/echo-server
     build: 
       context: ./app
-      dockerfile: cmd/echo-server/Dockerfile
+      dockerfile: cmd/echo-server/dockerfile
       target: echo-server
     ports:
       - 8000:8000
@@ -23,7 +23,7 @@ services:
     image: grpc-tools/raspi-server
     build: 
       context: ./app
-      dockerfile: cmd/raspi-server/Dockerfile
+      dockerfile: cmd/raspi-server/dockerfile
       target: raspi-server
     ports:
       - 8001:8001
@@ -41,7 +41,7 @@ services:
     image: grpc-tools/metrics-server
     build:
       context: ./app
-      dockerfile: cmd/metrics-server/Dockerfile
+      dockerfile: cmd/metrics-server/dockerfile
       target: metrics-server
     ports:
       - 8002:8002
@@ -50,7 +50,6 @@ services:
     image: prom/node-exporter
     ports:
       - 9100:9100
-#    network_mode: host
 
   prom:
     image: prom/prometheus
@@ -69,5 +68,3 @@ services:
       - 3000:3000
     depends_on:
       - prom
-
-
