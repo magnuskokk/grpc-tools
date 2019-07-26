@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/golang/glog"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -44,11 +43,7 @@ var _ = Describe("HTTP server and client for echo service", func() {
 			RegisterEchoAPIServer(s, mockAPIServer)
 		}
 
-		go func() {
-			if err := server.StartGRPCServer(ctx, buf.Listener, register); err != nil {
-				glog.Fatal(err)
-			}
-		}()
+		go server.StartGRPCServer(ctx, buf.Listener, register)
 
 		dialOpts := []grpc.DialOption{
 			grpc.WithContextDialer(buf.DialContext),

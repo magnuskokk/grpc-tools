@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"sync"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -69,10 +68,10 @@ func NewGatewayTestServer(ctx context.Context, opts *GatewayOptions) (*httptest.
 }
 
 // RunGatewayServer convienently dials to gRPC and runs the gateway.
-func RunGatewayServer(ctx context.Context, opts *GatewayOptions) error {
+func RunGatewayServer(ctx context.Context, opts *GatewayOptions) {
 	router, err := NewGatewayRouter(ctx, opts)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
 	srv := &http.Server{
@@ -83,33 +82,19 @@ func RunGatewayServer(ctx context.Context, opts *GatewayOptions) error {
 		Handler:      router,
 	}
 
-	errs := make(chan error)
-	defer close(errs)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	defer wg.Wait()
-
-	// Start HTTP server (and proxy calls to gRPC server endpoint)
 	go func() {
-		defer wg.Done()
 		if err := srv.ListenAndServe(); err != nil {
 			if err != http.ErrServerClosed {
-				errs <- err
+				log.Fatal(err)
 			}
 		}
 	}()
 
-	select {
-	case <-ctx.Done():
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		if err := srv.Shutdown(ctx); err != nil {
-			log.Println("Error shutting down http server:", err)
-		}
-		return ctx.Err()
-
-	case err := <-errs:
-		return err
+	<-ctx.Done()
+	log.Println("Shutting down HTTP server")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Println("Error shutting down http server:", err)
 	}
 }

@@ -1,3 +1,4 @@
+# DO NOT EDIT. This file is generated.
 FROM grpc-tools/gobuild as build
 ENV CGO_ENABLED=0
 WORKDIR /build

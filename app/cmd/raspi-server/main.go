@@ -30,31 +30,27 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	register := func(s *grpc.Server) {
-		raspiv1.RegisterRaspiAPIServer(s, &raspi.API{})
-	}
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := server.RunGRPCServer(ctx, grpcAddr, register); err != nil {
-			log.Fatal(err)
-		}
+		server.RunGRPCServer(ctx, &server.GRPCOptions{
+			ServeAddr: grpcAddr,
+			Register: func(s *grpc.Server) {
+				raspiv1.RegisterRaspiAPIServer(s, &raspi.API{})
+			},
+		})
 	}()
 	log.Println("Running raspi gRPC server at " + grpcAddr)
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := server.RunGatewayServer(ctx, &server.GatewayOptions{
+		server.RunGatewayServer(ctx, &server.GatewayOptions{
 			ServeAddr: httpAddr,
 			GRPCAddr:  grpcAddr,
 			DialOpts:  []grpc.DialOption{grpc.WithInsecure()},
 			Register:  raspiv1.RegisterRaspiAPIHandlerFromEndpoint,
 		})
-		if err != nil {
-			log.Fatal(err)
-		}
 	}()
 	log.Printf("Running raspi HTTP server at " + httpAddr)
 

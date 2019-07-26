@@ -30,33 +30,27 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	register := func(s *grpc.Server) {
-		echov1.RegisterEchoAPIServer(s, &echo.API{})
-	}
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := server.RunGRPCServer(ctx, grpcAddr, register); err != nil {
-			log.Fatal(err)
-		}
+		server.RunGRPCServer(ctx, &server.GRPCOptions{
+			ServeAddr: grpcAddr,
+			Register: func(s *grpc.Server) {
+				echov1.RegisterEchoAPIServer(s, &echo.API{})
+			},
+		})
 	}()
-	log.Println("Running echo gRPC server at " + grpcAddr)
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := server.RunGatewayServer(ctx, &server.GatewayOptions{
+		server.RunGatewayServer(ctx, &server.GatewayOptions{
 			ServeAddr: httpAddr,
 			GRPCAddr:  grpcAddr,
 			DialOpts:  []grpc.DialOption{grpc.WithInsecure()},
 			Register:  echov1.RegisterEchoAPIHandlerFromEndpoint,
 		})
-		if err != nil {
-			log.Fatal(err)
-		}
 	}()
-	log.Printf("Running echo HTTP server at " + httpAddr)
 
 	<-sigs
 	log.Println("Shutting down servers...")

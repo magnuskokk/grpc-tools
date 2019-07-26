@@ -4,52 +4,44 @@ import (
 	"context"
 	"log"
 	"net"
-	"sync"
 
 	"google.golang.org/grpc"
 )
 
-// RunGRPCServer is a wrapper function for easy running.
-func RunGRPCServer(ctx context.Context, addr string, register func(s *grpc.Server)) error {
-	lis, err := net.Listen("tcp", addr)
+// GRPCOptions for starting the server.
+type GRPCOptions struct {
+	ServeAddr string
+	Register  func(*grpc.Server)
+}
+
+// RunGRPCServer runs any service.
+func RunGRPCServer(ctx context.Context, opts *GRPCOptions) {
+	lis, err := net.Listen("tcp", opts.ServeAddr)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 
-	return StartGRPCServer(ctx, lis, register)
+	StartGRPCServer(ctx, lis, opts.Register)
+	log.Println("Shutting down gRPC server")
 }
 
 // StartGRPCServer starts a server for any service.
 // Stops the server when context is canceled.
-func StartGRPCServer(ctx context.Context, lis net.Listener, register func(*grpc.Server)) error {
+func StartGRPCServer(ctx context.Context, lis net.Listener, register func(*grpc.Server)) {
 	s := grpc.NewServer()
+	defer s.GracefulStop()
+
 	register(s)
 
-	errs := make(chan error)
-	defer close(errs)
-
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	defer wg.Wait()
-
 	go func() {
-		defer wg.Done()
 		if err := s.Serve(lis); err != nil {
 			if err != grpc.ErrServerStopped {
-				errs <- err
+				log.Fatal(err)
 			}
 		}
 	}()
 
-	select {
-	case <-ctx.Done():
-		log.Println("Shutting down gRPC server")
-		s.GracefulStop()
-		return nil
-
-	case err := <-errs:
-		return err
-	}
+	<-ctx.Done()
 }
 
 // ClientOptions for gRPC client.
