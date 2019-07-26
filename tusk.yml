@@ -49,14 +49,13 @@ tasks:
       - task: docker.cleanimages
       - task: docker.cleanvolumes
 
-  env.reset:
+  env.cleanall:
     usage: Reset and rebuild the dev environment.
     run:
       - task: docker.cleanall
       # sudo hack there is a docker issue in golocal
       - command: sudo rm -rf .direnv
       - command: sh install-tusk.sh
-      - command: tusk env.build
 
   env.build:
     usage: Build the docker containers for dev tools.

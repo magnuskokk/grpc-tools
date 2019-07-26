@@ -6,7 +6,6 @@ ARG UID
 ARG GID
 
 RUN apk add --no-cache build-base git
-
 RUN addgroup --gid "$GID" "$USER" \
     && adduser \
     --disabled-password \

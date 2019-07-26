@@ -53,7 +53,7 @@ Now that you have the environment loaded, you can run some commands. There are t
 * `$ tusk`
 ```
 Tasks:
-   app.bench               Run all go benchmarks.
+   app.bench               Run all go benchmarks in ./app.
    app.test                Run all go tests in ./app.
    docker.cleanall         Stop and remove everything related to services defined in docker-compose files.
    docker.cleancontainers  Stop and remove all containers, images and any anonymous volumes attached to containers.
@@ -61,13 +61,13 @@ Tasks:
    docker.cleanvolumes     Stop and remove all volumes.
    docker.down             Stop all containers. All docker.* commands include only services defined in docker-compose files.
    env.build               Build the docker containers for dev tools.
-   env.reset               Reset and rebuild the dev environment.
+   env.cleanall            Reset and rebuild the dev environment.
    gen.app.go              Run all //go:generate directives in ./app.
    gen.clean               Remove all generated files.
    gen.install.tools       Install tools and dependencies for dealing with protobuf linting and generation.
    gen.protoc              Generate gRPC server, client, gateway, typescript and swagger for all services.
-   gen.protolint           Lint protobuf definitions using prototool.
-   stack.build             Build stack.
+   gen.protolint           Lint all protobuf definitions using prototool.
+   stack.build             Build full stack.
    stack.down              Stop the stack.
    stack.up                Start the stack.
  ```
@@ -82,7 +82,8 @@ Tasks:
 * raspi `http://localhost:8081`
 
 ## Reset the dev environment:
-* `$ tusk env.reset`
+* `$ tusk env.cleanall`
+* `$ tusk env.build`
 
 ### VSCode
 direnv extension: https://marketplace.visualstudio.com/items?itemName=Rubymaniac.vscode-direnv. This allows installing all go tools in the .direnv directory.
