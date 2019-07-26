@@ -44,7 +44,7 @@ All proto services are defined in `./idl/{name}/{name}{version}`. The generated 
 
 A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`.
 
-Servers are defined in `docker-compose.yml` and `app/cmd`. The implementations are in `app/api/{name}`
+Servers are defined in `docker-compose.yml` and `app/cmd/{name}-server`. The implementations are in `app/api/{name}`
 
 Now that you have the environment loaded, you can run some commands. There are two example services `raspi` and `echo`.
 

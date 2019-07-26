@@ -7,6 +7,6 @@ for d in $DEVROOT/app/cmd/*-server/ ; do
     sed \
         -e "s/\${name}/$name/gi" \
         -e "s/\${port}/$port/gi" \
-        $DEVROOT/app/cmd/dockerfile.tpl \
-        > $DEVROOT/app/cmd/$name/dockerfile
+        $DEVROOT/app/cmd/Dockerfile.tpl \
+        > $DEVROOT/app/cmd/$name/Dockerfile
 done
