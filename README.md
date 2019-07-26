@@ -77,8 +77,8 @@ Tasks:
 * Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` 
 
 ## Swagger UI
-* `$ tusk serve.echo.swagger`
-* Open a browser at `http://localhost:8080` to see the swagger docs.
+* echo `http://localhost:8080`
+* raspi `http://localhost:8081`
 
 ## Reset the dev environment:
 * `$ tusk env.reset`
