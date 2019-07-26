@@ -36,6 +36,7 @@ message Status {
 * Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
 * `$ direnv allow .` to load local environment variables from .envrc.
 * `$ ./install-tusk.sh` to install the task runner.
+* `$ tusk` to list all tasks.
 
 ## Project layout
 It is possible to run commands through the root `tusk.yml` file using docker or locally by manually using `app/tusk.yml` if you have a local go installation.
