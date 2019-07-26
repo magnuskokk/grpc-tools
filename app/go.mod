@@ -12,6 +12,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.9.5
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
+	github.com/prometheus/client_golang v1.0.0
 	github.com/rs/cors v1.6.0
 	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
 	golang.org/x/sys v0.0.0-20190712062909-fae7ac547cb7 // indirect

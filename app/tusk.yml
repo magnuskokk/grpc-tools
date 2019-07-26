@@ -10,8 +10,8 @@ tasks:
           github.com/gogo/googleapis/...
           github.com/grpc-ecosystem/grpc-gateway/...
 
-  install.dev:
-    usage: Install go dev deps
+  install.tools:
+    usage: Install go dev tools.
     run:
       - set-environment:
           GO111MODULE: on
@@ -46,13 +46,3 @@ tasks:
     usage: Run all go benchmarks.
     run:
       command: go test -run=xxx -bench=. ./...
-
-  serve.echo.local:
-    usage: Run the echo server locally.
-    run:
-      command: go run cmd/echo-server/main.go
-
-  serve.raspi.local:
-    usage: Run the raspi server locally.
-    run:
-      command: go run cmd/raspi-server/main.go

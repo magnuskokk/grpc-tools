@@ -32,7 +32,10 @@ message Status {
 * `$ cd grpc-tools`
 * Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
 * `$ direnv allow .` to load local environment variables from .envrc.
-* `$ ./setup.sh` to build and install the dev environment.
+* `$ ./setup.sh` to set up the local dev environment.
+
+### Optionally install tools for code generation.
+* `$ tusk env.install.generate`
 
 ## Project layout
 It is possible to run commands through the root `tusk.yml` file using docker or locally by manually using `app/tusk.yml` if you have a local go installation.
@@ -45,35 +48,35 @@ Now that you have the environment loaded, you can run some commands. There are t
 * `$ tusk`
 ```
 Tasks:
-   app.bench.go         Run all go benchmarks.
-   app.generate.go      Run all //go:generate directives.
-   app.test.go          Run all go tests.
-   clean                Remove all generated files.
-   docker.destroy       Stop services and do global prune.
-   docker.down          Stop all containers.
-   env.build            Build the docker containers for dev tools.
-   env.destroy          Destroy the dev environment.
-   env.install          Install development tools.
-   env.reset            Reset and reinstall the dev environment.
-   protoc               Generate gRPC server, client, gateway, typescript and swagger for all services.
-   protolint            Lint protobuf definitions using prototool.
-   serve.echo           Start the echo service gRPC and HTTP server.
-   serve.echo.local     Start echo dev server in debug mode.
-   serve.echo.swagger   Start the swagger UI for echo service
-   serve.raspi          Start the raspi service gRPC and HTTP server.
-   serve.raspi.local    Start the raspi dev server in debug mode
-   serve.raspi.swagger  Start the swagger UI for raspi service
+   app.bench               Run all go benchmarks.
+   app.test                Run all go tests.
+   docker.cleanall         Clean all all docker stuff for services.
+   docker.cleancontainers  Remove all local containers, images and any anonymous volumes attached to containers.
+   docker.cleanimages      Stop all containers and remove all images used by any defined services.
+   docker.cleanvolumes     Stop and clean all local volumes.
+   docker.down             Stop all containers.
+   env.build               Build the docker containers for dev tools.
+   env.clean               Clean the environment including docker containers but keep images and named volumes.
+   env.install.tools       Install tools and dependencies for generating code.
+   env.reset               Reset and rebuild the dev environment.
+   gen.clean               Remove all generated files.
+   gen.go                  Run all //go:generate directives.
+   gen.protoc              Generate gRPC server, client, gateway, typescript and swagger for all services.
+   gen.protolint           Lint protobuf definitions using prototool.
+   monitor.grafana         Start Grafana.
+   stack.build             Build stack.
+   stack.down              Stop the stack.
+   stack.up                Start the stack.
  ```
 
-## Build and run the echo server
-* `$ tusk serve.echo`
-* Or start locally: `$ cd app; tusk serve.echo.local`
-* Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` You should see the same message returned
+## Build and run the stack
+* `$ tusk stack.build`
+* `$ tusk stack.up`
+* Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` 
 
-## Swagger UI (echo server must be running beforehand to enable the try out feature)
+## Swagger UI
 * `$ tusk serve.echo.swagger`
-
-* Open a browser at `http://localhost:8080` to see the docs.
+* Open a browser at `http://localhost:8080` to see the swagger docs.
 
 ## Reset the dev environment:
 * `$ tusk env.reset`

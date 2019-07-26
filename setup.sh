@@ -7,4 +7,3 @@ curl -sL https://git.io/tusk | bash -s -- -b .direnv/bin latest
 
 echo -e "\033[1;37mBuilding the development environment...\033[0m"
 tusk env.build
-tusk env.install

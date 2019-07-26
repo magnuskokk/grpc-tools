@@ -3,10 +3,14 @@ options:
     usage: Username to use for base images.
     default:
       command: id -un
+  group:
+    usage: Group name to use for base images.
+    default:
+      command: id -gn
   uid:
     usage: User id to use for base images.
     default:
-      command: id -u 
+      command: id -u
   gid:
     usage: User group id to use for base images.
     default:
@@ -16,14 +20,39 @@ tasks:
   docker.down:
     usage: Stop all containers.
     run:
-      - command: docker-compose -f docker-compose.dev.yml down --remove-orphans
-      - command: docker-compose down --remove-orphans
+      - command: docker-compose -f docker-compose.dev.yml down
+      - command: docker-compose down
 
-  docker.destroy:
-    usage: Stop services and do global prune.
+  docker.cleancontainers:
+    usage: Remove all local containers, images and any anonymous volumes attached to containers.
     run:
-      - task: docker.down
-      - command: docker system prune --volumes -a
+      - command: docker-compose -f docker-compose.dev.yml rm --stop --force -v
+      - command: docker-compose rm --stop --force -v
+
+  docker.cleanimages:
+    usage: Stop all containers and remove all images used by any defined services.
+    run:
+      - command: docker-compose -f docker-compose.dev.yml down --rmi all
+      - command: docker-compose down --rmi all
+
+  docker.cleanvolumes:
+    usage: Stop and clean all local volumes.
+    run:
+      - command: docker-compose -f docker-compose.dev.yml down -v
+      - command: docker-compose down -v
+
+  docker.cleanall:
+    usage: Clean all all docker stuff for services.
+    run:
+      - task: docker.cleancontainers
+      - task: docker.cleanimages
+      - task: docker.cleanvolumes
+
+  env.clean:
+    usage: Clean the environment including docker containers but keep images and named volumes.
+    run:
+      - task: docker.cleancontainers
+      - command: rm -rf ./.direnv
 
   env.build:
     usage: Build the docker containers for dev tools.
@@ -32,108 +61,101 @@ tasks:
       command: >
         docker-compose -f docker-compose.dev.yml build
         --force-rm
-        --parallel
         --build-arg USER=${user}
+        --build-arg GROUP=${group}
         --build-arg UID=${uid}
         --build-arg GID=${gid}
 
-  env.install:
-    usage: Install development tools.
-    description: Called by setup.sh.
-    run:
-      - command: docker-compose -f docker-compose.dev.yml up -d gobase
-      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.proto.wkt
-      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk install.dev
-
-  env.destroy:
-    usage: Destroy the dev environment with global docker prune.
-    run:
-      - task: docker.destroy
-      - command: rm -rf ./.direnv
-
   env.reset:
-    usage: Reset and reinstall the dev environment.
+    usage: Reset and rebuild the dev environment.
     run:
-      - task: env.destroy
+      - task: env.clean
       - command: sh setup.sh
 
-  protolint:
+  env.install.tools:
+    usage: Install tools and dependencies for generating code.
+    description: Downloads a lot of packages.
+    run:
+      - command: docker-compose -f docker-compose.dev.yml up -d golocal
+      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk install.tools
+      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk install.proto.wkt
+
+  gen.protolint:
     usage: Lint protobuf definitions using prototool.
     run:
       command: >
         docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool lint
 
-  protoc:
+  gen.protoc:
     usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
         docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
-  app.generate.go:
+  gen.go:
     usage: Run all //go:generate directives.
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d gobase
-      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk generate
+      - command: docker-compose -f docker-compose.dev.yml up -d golocal
+      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk generate
 
-  clean:
+  gen.clean:
     usage: Remove all generated files.
     run:
       - command: tusk -f ./app/tusk.yml clean
       - command: tusk -f ./frontend/tusk.yml clean
       - command: tusk -f ./swagger/tusk.yml clean
 
-  app.test.go:
+  app.test:
     usage: Run all go tests.
     description: |
       Test
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d gobase
-      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk test
+      - command: docker-compose -f docker-compose.dev.yml up -d golocal
+      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk test
 
-  app.bench.go:
+  app.bench:
     usage: Run all go benchmarks.
     run:
-      - command: docker-compose -f docker-compose.dev.yml up -d gobase
-      - command: docker-compose -f docker-compose.dev.yml exec gobase tusk bench
+      - command: docker-compose -f docker-compose.dev.yml up -d golocal
+      - command: docker-compose -f docker-compose.dev.yml exec golocal tusk bench
 
-  serve.echo:
-    usage: Start the echo service gRPC and HTTP server.
+  monitor.grafana:
+    usage: Start Grafana.
+    description: at localhost:3000
     run:
-      command: docker-compose up echo-server
+      - command: docker-compose -f docker-compose.yml up grafana
 
-  serve.echo.local:
-    usage: Start echo dev server in debug mode.
+  stack.build:
+    usage: Build stack.
     run:
-      command: tusk -f ./app/tusk.yml serve.echo.local
+      - command: >
+          docker-compose -f docker-compose.dev.yml build
+          --force-rm
+          --build-arg USER=${user}
+          --build-arg GROUP=${group}
+          --build-arg UID=${uid}
+          --build-arg GID=${gid}
+          gobuild
+      - command: >
+          docker-compose build
+          --force-rm
+          --parallel
+          --build-arg USER=${user}
+          --build-arg GROUP=${group}
+          --build-arg UID=${uid}
+          --build-arg GID=${gid}
+          echo-server
+          raspi-server
+          metrics-server
 
-  serve.echo.swagger:
-    usage: Start the swagger UI for echo service
+  stack.up:
+    usage: Start the stack.
     run:
-      command: >
-        docker-compose -f docker-compose.dev.yml run 
-        -e SWAGGER_JSON=/docs/idl/echo/echov1/echo_api.swagger.json
-        --rm
-        --service-ports
-        swaggerui
+      - command: docker-compose up -d
 
-  serve.raspi:
-    usage: Start the raspi service gRPC and HTTP server.
+  stack.down:
+    usage: Stop the stack.
     run:
-      command: docker-compose up raspi-server
-
-  serve.raspi.local:
-    usage: Start the raspi dev server in debug mode
-    run:
-      command: tusk -f ./app/tusk.yml serve.raspi.local
-  
-  serve.raspi.swagger:
-    usage: Start the swagger UI for raspi service
-    run:
-      command: >
-        docker-compose -f docker-compose.dev.yml run 
-        -e SWAGGER_JSON=/docs/idl/raspi/raspiv1/raspi_api.swagger.json
-        --rm
-        --service-ports
-        swaggerui
+      - command: docker-compose down

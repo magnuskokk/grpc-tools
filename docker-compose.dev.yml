@@ -1,35 +1,42 @@
 version: '3.7'
 
-services:
-  # base go image for running development related tasks
-  gobase:
-    image: grpc-tools/gobase
-    build: 
-      context: ./docker/gobase
-      dockerfile: Dockerfile
-      args:
-        - USER
-        - UID
-        - GID
-    volumes:
-     - ./app:/app
-     - ./.direnv:/go
-    working_dir: /app
-    stdin_open: yes
-    tty: yes
+x-build-args:
+  &build-args
+  args:
+    - USER
+    - GROUP
+    - UID
+    - GID
 
-  # prototool the swiss army knife of protobufs
+x-go:
+  &go
+  working_dir: /app
+  stdin_open: yes
+  tty: yes
+  volumes: 
+    - ./app:/app
+    - ./.direnv:/go
+
+services:
+  golocal:
+    <<: *go
+    image: grpc-tools/golocal
+    build: 
+      context: ./app
+      dockerfile: docker/golocal/Dockerfile
+      <<: *build-args
+
+  gobuild:
+    <<: *go
+    image: grpc-tools/gobuild
+    build: 
+      context: ./app
+      dockerfile: docker/gobuild/Dockerfile
+      <<: *build-args
+
   prototool:
     image: uber/prototool
     volumes:
       - ./:/work
       - /work/.direnv
       - ./.direnv:/direnv
-
-  # serve the swagger doc viewer
-  swaggerui:
-    image: swaggerapi/swagger-ui
-    volumes:
-      - ./swagger:/docs
-    ports:
-      - 8080:8080
