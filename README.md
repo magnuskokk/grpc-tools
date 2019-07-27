@@ -63,11 +63,12 @@ Tasks:
    docker.down              Stop all containers. All docker.* commands include only services defined in docker-compose.* files.
    docker.prune.system      WARNING! Prunes the whole system.
    env.build                Build containers for dev tools.
-   env.clean                Reset the dev environment and tusk task runner.
+   env.clean                Reset an existing functional environment and install tusk.
+   env.clean.sudo           Reset any environment in this directory.
+   gen.app                  Run all //go:generate directives in ./app.
    gen.app.dockerfiles      Generate Dockerfiles for servers in ./app/cmd.
-   gen.app.go               Run all //go:generate directives in ./app.
    gen.clean                Remove all generated files.
-   gen.install.tools        Install tools and dependencies for dealing with protobuf linting and generation.
+   gen.install.tools        Install tools and dependencies necessary for using protolint and protoc.
    gen.protoc               Generate gRPC server, client, gateway, typescript and swagger for all services.
    gen.protolint            Lint all protobuf definitions using prototool.
    stack.build              Build the whole stack.
