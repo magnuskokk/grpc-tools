@@ -13,7 +13,7 @@ import (
 )
 
 var sigs chan os.Signal
-var httpAddr = ":8002"
+var serveAddr = ":8002"
 
 func init() {
 	sigs = make(chan os.Signal, 1)
@@ -24,7 +24,7 @@ func main() {
 	log.Println("Metrics server listening at :8002")
 
 	srv := &http.Server{
-		Addr:         httpAddr,
+		Addr:         serveAddr,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,

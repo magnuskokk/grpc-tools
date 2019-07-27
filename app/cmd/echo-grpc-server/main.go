@@ -1,8 +1,8 @@
 package main
 
 import (
-	"app/api/raspi"
-	"app/idl/raspi/raspiv1"
+	"app/api/echo"
+	"app/idl/echo/echov1"
 	"app/pkg/server"
 	"context"
 	"log"
@@ -15,8 +15,7 @@ import (
 )
 
 var sigs chan os.Signal
-var grpcAddr = ":9001"
-var httpAddr = ":8001"
+var serveAddr = ":9000"
 
 func init() {
 	sigs = make(chan os.Signal, 1)
@@ -34,25 +33,13 @@ func main() {
 	go func() {
 		defer wg.Done()
 		server.RunGRPCServer(ctx, &server.GRPCOptions{
-			ServeAddr: grpcAddr,
+			ServeAddr: serveAddr,
 			Register: func(s *grpc.Server) {
-				raspiv1.RegisterRaspiAPIServer(s, &raspi.API{})
+				echov1.RegisterEchoAPIServer(s, &echo.API{})
 			},
 		})
 	}()
-	log.Println("Running raspi gRPC server at " + grpcAddr)
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		server.RunGatewayServer(ctx, &server.GatewayOptions{
-			ServeAddr: httpAddr,
-			GRPCAddr:  grpcAddr,
-			DialOpts:  []grpc.DialOption{grpc.WithInsecure()},
-			Register:  raspiv1.RegisterRaspiAPIHandlerFromEndpoint,
-		})
-	}()
-	log.Printf("Running raspi HTTP server at " + httpAddr)
+	log.Printf("Running echo HTTP server at " + serveAddr)
 
 	<-sigs
 	log.Println("Shutting down servers...")

@@ -7,25 +7,52 @@ volumes:
 networks:
   front-tier:
   back-tier:
+  web-services:
+
+# All hosts on web-service can access each other by name.
+x-web-service:
+  &web-service
+  networks:
+    - web-services
 
 services:
-  echo-server:
-    image: grpc-tools/echo-server
+  echo-grpc-server:
+    image: grpc-tools/echo-grpc-server
     build: 
       context: ./app
-      dockerfile: cmd/echo-server/Dockerfile
-      target: echo-server
+      dockerfile: cmd/echo-grpc-server/Dockerfile
+      target: echo-grpc-server
+    ports:
+      - 9000:9000
+    <<: *web-service
+
+  echo-gateway-server:
+    image: grpc-tools/echo-gateway-server
+    build: 
+      context: ./app
+      dockerfile: cmd/echo-gateway-server/Dockerfile
+      target: echo-gateway-server
     ports:
       - 8000:8000
+    <<: *web-service
 
-  raspi-server:
-    image: grpc-tools/raspi-server
+  raspi-grpc-server:
+    image: grpc-tools/raspi-grpc-server
     build: 
       context: ./app
-      dockerfile: cmd/raspi-server/Dockerfile
-      target: raspi-server
+      dockerfile: cmd/raspi-grpc-server/Dockerfile
+      target: raspi-grpc-server
     ports:
-      - 8001:8001
+      - 9001:9001
+    <<: *web-service
+
+  raspi-gateway-server:
+    image: grpc-tools/raspi-gateway-server
+    build: 
+      context: ./app
+      dockerfile: cmd/raspi-gateway-server/Dockerfile
+      target: raspi-gateway-server
+    <<: *web-service
 
   metrics-server:
     image: grpc-tools/metrics-server

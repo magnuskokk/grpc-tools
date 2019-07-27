@@ -145,8 +145,11 @@ tasks:
       - command: >
           docker-compose build
           --force-rm
-          echo-server
-          raspi-server
+          --parallel
+          echo-grpc-server
+          echo-gateway-server
+          raspi-grpc-server
+          raspi-gateway-server
           metrics-server
 
   stack.up:
