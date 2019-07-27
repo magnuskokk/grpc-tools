@@ -56,7 +56,7 @@ tasks:
     description: Clean without using sudo, 0400 permission issues with go. See https://github.com/golang/go/issues/27455#issuecomment-417997868
     run:
       # Run outside of GOPATH
-      - command: docker-compose -f docker-compose.dev.yml run --workdir="/" golocal go clean -modcache
+      - command: docker-compose -f docker-compose.dev.yml run --rm --workdir="/" golocal go clean -modcache
       - command: tusk docker.clean
       - command: rm -rf .direnv
       - command: sh install-tusk.sh
@@ -85,24 +85,24 @@ tasks:
     description: Not necessary for building, only for development. All generated files are included in the repo.
     run:
       - command: >
-          docker-compose -f docker-compose.dev.yml run golocal
+          docker-compose -f docker-compose.dev.yml run --rm golocal
           tusk install.tools
       - command: >
-          docker-compose -f docker-compose.dev.yml run golocal
+          docker-compose -f docker-compose.dev.yml run --rm golocal
           tusk install.proto.wkt
 
   gen.protolint:
     usage: Lint all protobuf definitions using prototool.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool lint
 
   gen.protoc:
     usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
   gen.app.dockerfiles:
@@ -114,7 +114,7 @@ tasks:
     usage: Run all //go:generate directives in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run golocal
+        docker-compose -f docker-compose.dev.yml run --rm golocal
         tusk generate
 
   gen.clean:
@@ -128,14 +128,14 @@ tasks:
     usage: Run all go tests in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run golocal
+        docker-compose -f docker-compose.dev.yml run --rm golocal
         tusk test
 
   app.bench:
     usage: Run all go benchmarks in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run golocal
+        docker-compose -f docker-compose.dev.yml run --rm golocal
         tusk bench
 
   stack.build:
