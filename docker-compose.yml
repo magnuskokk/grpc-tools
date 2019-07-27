@@ -10,15 +10,6 @@ services:
     ports:
       - 8000:8000
 
-  echo-swagger:
-    image: swaggerapi/swagger-ui
-    environment:
-      - SWAGGER_JSON=/docs/idl/echo/echov1/echo_api.swagger.json
-    volumes:
-      - ./swagger:/docs
-    ports:
-      - 8080:8080
-
   raspi-server:
     image: grpc-tools/raspi-server
     build: 
@@ -28,15 +19,6 @@ services:
     ports:
       - 8001:8001
 
-  raspi-swagger:
-    image: swaggerapi/swagger-ui
-    environment:
-      - SWAGGER_JSON=/docs/idl/raspi/raspiv1/raspi_api.swagger.json
-    volumes:
-      - ./swagger:/docs
-    ports:
-      - 8081:8080
-
   metrics-server:
     image: grpc-tools/metrics-server
     build:
@@ -45,6 +27,24 @@ services:
       target: metrics-server
     ports:
       - 8002:8002
+
+  echo-swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      - SWAGGER_JSON=/docs/idl/echo/echov1/echo_api.swagger.json
+    volumes:
+      - ./swagger:/docs
+    ports:
+      - 8080:8080
+
+  raspi-swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      - SWAGGER_JSON=/docs/idl/raspi/raspiv1/raspi_api.swagger.json
+    volumes:
+      - ./swagger:/docs
+    ports:
+      - 8081:8080
 
   exporter:
     image: prom/node-exporter

@@ -1,64 +1,69 @@
 options:
   user:
-    usage: Username to use for base images.
+    usage: Username for local images.
     default:
       command: id -un
   group:
-    usage: Group name to use for base images.
+    usage: Group name for local images.
     default:
       command: id -gn
   uid:
-    usage: User id to use for base images.
+    usage: User ID for local images.
     default:
       command: id -u
   gid:
-    usage: User group id to use for base images.
+    usage: Group ID for local images.
     default:
       command: id -g
 
 tasks:
   docker.down:
-    usage: Stop all containers. All docker.* commands include only services defined in docker-compose files.
+    usage: Stop all containers. All docker.* commands include only services defined in docker-compose.* files.
     run:
       - command: docker-compose -f docker-compose.dev.yml down
       - command: docker-compose down
 
-  docker.cleancontainers:
+  docker.clean.containers:
     usage: Stop and remove all containers, images and any anonymous volumes attached to containers.
     run:
       - command: docker-compose -f docker-compose.dev.yml rm --stop --force -v
       - command: docker-compose rm --stop --force -v
 
-  docker.cleanimages:
+  docker.clean.images:
     usage: Stop all containers and remove all images.
     run:
       - command: docker-compose -f docker-compose.dev.yml down --rmi all
       - command: docker-compose down --rmi all
 
-  docker.cleanvolumes:
-    usage: Stop and remove all volumes.
+  docker.clean.volumes:
+    usage: Stop all containers and remove all volumes.
     run:
       - command: docker-compose -f docker-compose.dev.yml down -v
       - command: docker-compose down -v
 
-  docker.cleanall:
-    usage: Stop and remove everything related to services defined in docker-compose files.
+  docker.clean:
+    usage: Stop and clean everything but keep system cache for fast rebuilds.
     run:
       - task: docker.down
-      - task: docker.cleancontainers
-      - task: docker.cleanimages
-      - task: docker.cleanvolumes
+      - task: docker.clean.containers
+      - task: docker.clean.images
+      - task: docker.clean.volumes
 
-  env.cleanall:
-    usage: Reset and rebuild the dev environment.
+  docker.prune.system:
+    usage: WARNING! Prunes the whole system.
     run:
-      - task: docker.cleanall
-      # sudo hack there is a docker issue in golocal
-      - command: sudo rm -rf .direnv
+      command: docker system prune --volumes -a
+
+  env.clean:
+    usage: Reset the dev environment and tusk task runner.
+    run:
+      - command: docker-compose -f docker-compose.dev.yml run --workdir="/" golocal go clean -modcache
+      - task: docker.clean
+      - command: rm -rf .direnv
       - command: sh install-tusk.sh
 
   env.build:
-    usage: Build the docker containers for dev tools.
+    usage: Build containers for dev tools.
     run:
       command: >
         docker-compose -f docker-compose.dev.yml build
@@ -74,10 +79,10 @@ tasks:
     description: Not necessary for building, only for development. All generated files are included in the repo.
     run:
       - command: >
-          docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+          docker-compose -f docker-compose.dev.yml run golocal
           tusk install.tools
       - command: >
-          docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+          docker-compose -f docker-compose.dev.yml run golocal
           tusk install.proto.wkt
 
   gen.protolint:
@@ -94,11 +99,16 @@ tasks:
         docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
         prototool generate
 
+  gen.app.dockerfiles:
+    usage: Generate Dockerfiles for servers in ./app/cmd.
+    run:
+      command: sh ./app/cmd/generate-dockerfiles.sh
+
   gen.app.go:
     usage: Run all //go:generate directives in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        docker-compose -f docker-compose.dev.yml run golocal
         tusk generate
 
   gen.clean:
@@ -112,18 +122,18 @@ tasks:
     usage: Run all go tests in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        docker-compose -f docker-compose.dev.yml run golocal
         tusk test
 
   app.bench:
     usage: Run all go benchmarks in ./app.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} golocal
+        docker-compose -f docker-compose.dev.yml run golocal
         tusk bench
 
   stack.build:
-    usage: Build full stack.
+    usage: Build the whole stack.
     run:
       - command: docker-compose -f docker-compose.dev.yml build gobuild
       - command: >

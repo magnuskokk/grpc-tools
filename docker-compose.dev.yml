@@ -8,31 +8,24 @@ x-build-args:
     - UID
     - GID
 
-x-go:
-  &go
-  working_dir: /app
-  stdin_open: yes
-  tty: yes
-
 services:
   golocal:
-    <<: *go
     image: grpc-tools/golocal
     build: 
       context: ./app
       dockerfile: docker/golocal/Dockerfile
       <<: *build-args
+    stdin_open: yes
+    tty: yes
     volumes: 
-    - ./app:/app
-    - ./.direnv:/go
+      - ./app:/app
+      - ./.direnv:/go
 
   gobuild:
-    <<: *go
     image: grpc-tools/gobuild
     build: 
       context: ./app
       dockerfile: docker/gobuild/Dockerfile
-      <<: *build-args
 
   prototool:
     image: uber/prototool

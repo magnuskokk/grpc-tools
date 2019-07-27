@@ -2,7 +2,6 @@
 
 # Extend gobuild which has predownloaded dependencies.
 FROM grpc-tools/gobuild as build
-ENV CGO_ENABLED=0
 WORKDIR /build
 RUN go build -a -o bin/${name} cmd/${name}/main.go
 

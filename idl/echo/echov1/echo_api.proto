@@ -38,7 +38,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   // base_path: "/api";
   external_docs: {
     url: "https://github.com/magnuskokk/grpc-tools";
-    description: "Development environment and tools for full-stack gRPC service generation.";
+    description: "Dockerized Development Environment and Tools for full-stack gRPC service generation.";
   }
   schemes: HTTP;
 };

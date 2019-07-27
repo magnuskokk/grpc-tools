@@ -1,6 +1,8 @@
 FROM golang:alpine
 ENV GO111MODULE=on
-RUN apk add --no-cache build-base git
+ENV CGO_ENABLED=0
+
+RUN apk add --no-cache git
 
 WORKDIR /build
 COPY . .

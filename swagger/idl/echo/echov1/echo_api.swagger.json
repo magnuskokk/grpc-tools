@@ -52,7 +52,7 @@
     }
   },
   "externalDocs": {
-    "description": "Development environment and tools for full-stack gRPC service generation.",
+    "description": "Dockerized Development Environment and Tools for full-stack gRPC service generation.",
     "url": "https://github.com/magnuskokk/grpc-tools"
   }
 }

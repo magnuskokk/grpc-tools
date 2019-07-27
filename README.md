@@ -53,23 +53,25 @@ Now that you have the environment loaded, you can run some commands. There are t
 * `$ tusk`
 ```
 Tasks:
-   app.bench               Run all go benchmarks in ./app.
-   app.test                Run all go tests in ./app.
-   docker.cleanall         Stop and remove everything related to services defined in docker-compose files.
-   docker.cleancontainers  Stop and remove all containers, images and any anonymous volumes attached to containers.
-   docker.cleanimages      Stop all containers and remove all images.
-   docker.cleanvolumes     Stop and remove all volumes.
-   docker.down             Stop all containers. All docker.* commands include only services defined in docker-compose files.
-   env.build               Build the docker containers for dev tools.
-   env.cleanall            Reset and rebuild the dev environment.
-   gen.app.go              Run all //go:generate directives in ./app.
-   gen.clean               Remove all generated files.
-   gen.install.tools       Install tools and dependencies for dealing with protobuf linting and generation.
-   gen.protoc              Generate gRPC server, client, gateway, typescript and swagger for all services.
-   gen.protolint           Lint all protobuf definitions using prototool.
-   stack.build             Build full stack.
-   stack.down              Stop the stack.
-   stack.up                Start the stack.
+   app.bench                Run all go benchmarks in ./app.
+   app.test                 Run all go tests in ./app.
+   docker.clean             Stop and clean everything but keep system cache for fast rebuilds.
+   docker.clean.containers  Stop and remove all containers, images and any anonymous volumes attached to containers.
+   docker.clean.images      Stop all containers and remove all images.
+   docker.clean.volumes     Stop all containers and remove all volumes.
+   docker.down              Stop all containers. All docker.* commands include only services defined in docker-compose.* files.
+   docker.prune.system      WARNING! Prunes the whole system.
+   env.build                Build containers for dev tools.
+   env.clean                Reset the dev environment and tusk task runner.
+   gen.app.dockerfiles      Generate Dockerfiles for servers in ./app/cmd.
+   gen.app.go               Run all //go:generate directives in ./app.
+   gen.clean                Remove all generated files.
+   gen.install.tools        Install tools and dependencies for dealing with protobuf linting and generation.
+   gen.protoc               Generate gRPC server, client, gateway, typescript and swagger for all services.
+   gen.protolint            Lint all protobuf definitions using prototool.
+   stack.build              Build the whole stack.
+   stack.down               Stop the stack.
+   stack.up                 Start the stack.
  ```
 
 ## Build and run the stack
@@ -77,12 +79,12 @@ Tasks:
 * `$ tusk stack.up`
 * Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` 
 
-## Swagger UI
-* echo `http://localhost:8080`
-* raspi `http://localhost:8081`
+## Swagger UI with "Try out"
+* echo-server: `http://localhost:8080`
+* raspi-server: `http://localhost:8081`
 
 ## Reset the dev environment:
-* `$ tusk env.cleanall`
+* `$ tusk env.clean`
 * `$ tusk env.build`
 
 ### VSCode
