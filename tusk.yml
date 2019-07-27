@@ -1,20 +1,17 @@
 options:
-  user:
-    usage: Username for local images.
-    default:
-      command: id -un
-  group:
-    usage: Group name for local images.
-    default:
-      command: id -gn
   uid:
     usage: User ID for local images.
     default:
       command: id -u
+
   gid:
     usage: Group ID for local images.
+    default: 65535
+
+  user:
+    usage: Username for local images.
     default:
-      command: id -g
+      command: id -un
 
 tasks:
   docker.down:
@@ -55,11 +52,21 @@ tasks:
       command: docker system prune --volumes -a
 
   env.clean:
-    usage: Reset the dev environment and tusk task runner.
+    usage: Reset an existing functional environment and install tusk.
+    description: Clean without using sudo, 0400 permission issues with go. See https://github.com/golang/go/issues/27455#issuecomment-417997868
     run:
+      # Run outside of GOPATH
       - command: docker-compose -f docker-compose.dev.yml run --workdir="/" golocal go clean -modcache
-      - task: docker.clean
+      - command: tusk docker.clean
       - command: rm -rf .direnv
+      - command: sh install-tusk.sh
+
+  env.clean.sudo:
+    usage: Reset any environment in this directory.
+    description: Does keep system cache for fast docker rebuilds.
+    run:
+      - command: tusk docker.clean
+      - command: sudo rm -rf .direnv
       - command: sh install-tusk.sh
 
   env.build:
@@ -69,13 +76,12 @@ tasks:
         docker-compose -f docker-compose.dev.yml build
         --force-rm
         --build-arg USER=${user}
-        --build-arg GROUP=${group}
         --build-arg UID=${uid}
         --build-arg GID=${gid}
         golocal
 
   gen.install.tools:
-    usage: Install tools and dependencies for dealing with protobuf linting and generation.
+    usage: Install tools and dependencies necessary for using protolint and protoc.
     description: Not necessary for building, only for development. All generated files are included in the repo.
     run:
       - command: >
@@ -89,14 +95,14 @@ tasks:
     usage: Lint all protobuf definitions using prototool.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run -u ${uid}:${gid} prototool
         prototool lint
 
   gen.protoc:
     usage: Generate gRPC server, client, gateway, typescript and swagger for all services.
     run:
       command: >
-        docker-compose -f docker-compose.dev.yml run --rm -u ${uid}:${gid} prototool
+        docker-compose -f docker-compose.dev.yml run -u ${uid}:${gid} prototool
         prototool generate
 
   gen.app.dockerfiles:
@@ -104,7 +110,7 @@ tasks:
     run:
       command: sh ./app/cmd/generate-dockerfiles.sh
 
-  gen.app.go:
+  gen.app:
     usage: Run all //go:generate directives in ./app.
     run:
       command: >

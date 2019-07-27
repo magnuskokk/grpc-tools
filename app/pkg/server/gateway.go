@@ -67,7 +67,8 @@ func NewGatewayTestServer(ctx context.Context, opts *GatewayOptions) (*httptest.
 	return srv, nil
 }
 
-// RunGatewayServer convienently dials to gRPC and runs the gateway.
+// RunGatewayServer convienently dials to gRPC and runs the gateway
+// and shuts down when context is cancelled.
 func RunGatewayServer(ctx context.Context, opts *GatewayOptions) {
 	router, err := NewGatewayRouter(ctx, opts)
 	if err != nil {
@@ -82,6 +83,15 @@ func RunGatewayServer(ctx context.Context, opts *GatewayOptions) {
 		Handler:      router,
 	}
 
+	defer func() {
+		log.Println("Shutting down HTTP server")
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Println("Error shutting down http server:", err)
+		}
+	}()
+
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
 			if err != http.ErrServerClosed {
@@ -91,10 +101,4 @@ func RunGatewayServer(ctx context.Context, opts *GatewayOptions) {
 	}()
 
 	<-ctx.Done()
-	log.Println("Shutting down HTTP server")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Println("Error shutting down http server:", err)
-	}
 }

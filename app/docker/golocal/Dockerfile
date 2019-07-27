@@ -3,11 +3,10 @@ ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 
 ARG USER
-ARG GROUP
 ARG UID
 ARG GID
 
-RUN apk add --no-cache build-base git
+RUN apk add build-base git
 
 RUN addgroup --gid "$GID" "$USER" \
     && adduser \

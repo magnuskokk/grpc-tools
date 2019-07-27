@@ -28,6 +28,7 @@ message Status {
 
 ## Required packages for development
 * `direnv`
+* `docker`
 * `docker-compose`
 
 ## Setup the development environment
@@ -84,7 +85,7 @@ Tasks:
 * raspi-server: `http://localhost:8081`
 
 ## Reset the dev environment:
-* `$ tusk env.clean`
+* `$ tusk env.clean.sudo`
 * `$ tusk env.build`
 
 ### VSCode
