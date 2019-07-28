@@ -55,7 +55,7 @@ tasks:
     description: >
       Does keep system cache for fast docker rebuilds.
       Clean without using sudo, 0400 permission issues with go. See https://github.com/golang/go/issues/27455#issuecomment-417997868
-      docker-compose -f docker-compose.tools.yml run --rm --workdir="/" golocal go clean -modcache
+      Alternative docker-compose -f docker-compose.tools.yml run --rm --workdir="/" golocal go clean -modcache
     run:
       - command: tusk docker.clean
       - command: sudo rm -rf .direnv
@@ -115,23 +115,9 @@ tasks:
       - command: docker-compose -f docker-compose.tools.yml up -d golocal
       - command: docker-compose -f docker-compose.tools.yml exec golocal go test -run=xxx -bench=. ${package}
 
-  stack.build:
-    usage: Build the whole stack.
-    run:
-      - command: docker-compose -f docker-compose.tools.yml build gobuild
-      - command: >
-          docker-compose build
-          --force-rm
-          --parallel
-          echo-grpc-server
-          echo-gateway-server
-          raspi-grpc-server
-          raspi-gateway-server
-          #metrics-server
-
   gen.install.tools:
     usage: Install tools and dependencies necessary for using protolint and protoc.
-    description: Only necessary for development. All generated files are included in the repo.
+    description: Only necessary for development and code generation. All generated files are included in the repo.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d golocal
       - command: docker-compose -f docker-compose.tools.yml exec -e GO111MODULE=on golocal go get -v golang.org/x/tools/go/packages
@@ -177,3 +163,24 @@ tasks:
       - task: go.generate.clean
       - task: gen.protoc.clean
       - task: gen.servers.clean
+
+  gen.all:
+    usage: Run all generators. (Must have run gen.install.tools first).
+    run:
+      - task: gen.protoc
+      - command: tusk go.generate ./...
+      - task: gen.servers
+
+  stack.build:
+    usage: Build the whole stack.
+    run:
+      - command: docker-compose -f docker-compose.tools.yml build gobuild
+      - command: >
+          docker-compose build
+          --force-rm
+          --parallel
+          echo-grpc-server
+          echo-gateway-server
+          raspi-grpc-server
+          raspi-gateway-server
+          #metrics-server

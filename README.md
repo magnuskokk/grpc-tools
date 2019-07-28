@@ -39,7 +39,7 @@ The environment is currently simply a task runner and a golang docker image with
 * `$ direnv allow .` to load local environment variables from .envrc.
 * `$ ./install-tusk.sh` to install the task runner.
 * `$ tusk` to list all tasks.
-* `$ env.build` to build the development environment.
+* `$ tusk env.build` to build the development environment images.
 
 ## Project layout
 All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
