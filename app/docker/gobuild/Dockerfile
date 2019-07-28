@@ -1,8 +1,6 @@
-FROM golang:alpine
+FROM golang:stretch
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
-
-RUN apk add --no-cache git
 
 WORKDIR /build
 COPY . .

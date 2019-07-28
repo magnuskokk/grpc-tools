@@ -1,5 +1,0 @@
-tasks:
-  clean:
-    usage: Remove all generated files.
-    run:
-      command: rm -rf generated

@@ -32,16 +32,16 @@ message Status {
 * `docker-compose`
 
 ## Setup the development environment
+The environment is currently simply a task runner and a golang docker image with local user.
 * `$ git clone https://github.com/magnuskokk/grpc-tools.git`
 * `$ cd grpc-tools`
 * Install `direnv` from your package manager and set up the shell hook for the terminal emulator you're using (bash, zsh, etc...): https://github.com/direnv/direnv.
 * `$ direnv allow .` to load local environment variables from .envrc.
 * `$ ./install-tusk.sh` to install the task runner.
 * `$ tusk` to list all tasks.
+* `$ env.build` to build the development environment.
 
 ## Project layout
-It is possible to run commands through the root `tusk.yml` file using docker or locally by manually using `app/tusk.yml` if you have a local go installation.
-
 All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
 
 A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`.
@@ -78,12 +78,12 @@ Tasks:
 
 ## Build and run the stack
 * `$ tusk stack.build`
-* `$ tusk stack.up`
+* `$ docker-compose up -d`
 * Make sure it's responding: `$ curl http://localhost:8000/echo?message=test` 
 
 ## Swagger UI with "Try out"
-* echo-server: `http://localhost:8080`
-* raspi-server: `http://localhost:8081`
+* echo server: `http://localhost:8080`
+* raspi server: `http://localhost:8081`
 
 ## Reset the dev environment:
 * `$ tusk env.clean.sudo`
