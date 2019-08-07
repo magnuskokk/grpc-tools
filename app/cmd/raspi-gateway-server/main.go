@@ -6,6 +6,7 @@ import (
 	"app/idl/raspi/raspiv1"
 	"app/pkg/server"
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync"
@@ -39,6 +40,8 @@ func main() {
 			Register:  raspiv1.RegisterRaspiAPIHandlerFromEndpoint,
 		})
 	}()
+
+	fmt.Println("Running raspi gateway server at", os.Getenv("HTTP_BIND_ADDR"))
 
 	<-sigs
 }

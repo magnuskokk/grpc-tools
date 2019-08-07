@@ -19,6 +19,7 @@ import (
 	"app/idl/{{ .Name }}/{{ .Name }}{{ .Version }}"
 	"app/pkg/server"
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync"
@@ -53,6 +54,8 @@ func main() {
 		})
 	}()
 
+	fmt.Println("Running {{ .Name }} gRPC server at", os.Getenv("GRPC_BIND_ADDR"))
+
 	<-sigs
 }
 `
@@ -64,6 +67,7 @@ import (
 	"app/idl/{{ .Name }}/{{ .Name }}{{ .Version }}"
 	"app/pkg/server"
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync"
@@ -98,6 +102,8 @@ func main() {
 		})
 	}()
 
+	fmt.Println("Running {{ .Name }} gateway server at", os.Getenv("HTTP_BIND_ADDR"))
+
 	<-sigs
 }
 `
@@ -115,13 +121,13 @@ CMD ["/{{ .Bin }}/{{ .Bin }}"]
 `
 
 type grpcConf struct {
-	Name        string `mapstructure:"name"`
+	Bin         string `mapstructure:"bin"`
 	Register    string `mapstructure:"register"`
 	Implementor string `mapstructure:"implementor"`
 }
 
 type gatewayConf struct {
-	Name     string `mapstructure:"name"`
+	Bin      string `mapstructure:"bin"`
 	Register string `mapstructure:"register"`
 }
 
@@ -160,7 +166,7 @@ func renderGRPCServer(serviceName string, conf service) {
 	// Generate gRPC server
 	data := tplData{
 		Name:        serviceName,
-		Bin:         serviceName + "-grpc-server",
+		Bin:         conf.GRPC.Bin,
 		Version:     conf.Version,
 		Register:    conf.GRPC.Register,
 		Implementor: conf.GRPC.Implementor,
@@ -176,7 +182,7 @@ func renderGatewayServer(serviceName string, conf service) {
 	// Generate HTTP gateway server
 	data := tplData{
 		Name:     serviceName,
-		Bin:      serviceName + "-gateway-server",
+		Bin:      conf.Gateway.Bin,
 		Version:  conf.Version,
 		Register: conf.Gateway.Register,
 	}

@@ -7,6 +7,7 @@ import (
 	"app/idl/echo/echov1"
 	"app/pkg/server"
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync"
@@ -40,6 +41,8 @@ func main() {
 			},
 		})
 	}()
+
+	fmt.Println("Running echo gRPC server at", os.Getenv("GRPC_BIND_ADDR"))
 
 	<-sigs
 }

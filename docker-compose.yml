@@ -16,7 +16,7 @@ services:
       dockerfile: cmd/echo-grpc-server/Dockerfile
       target: echo-grpc-server
     environment:
-      - GRPC_BIND_ADDR=":9000"
+      - GRPC_BIND_ADDR=:9000
     ports:
       - 9000:9000
     networks:
@@ -29,8 +29,8 @@ services:
       dockerfile: cmd/echo-gateway-server/Dockerfile
       target: echo-gateway-server
     environment:
-      - HTTP_BIND_ADDR=":8000"
-      - GRPC_DIAL_ADDR="echo-grpc-server:9000"
+      - HTTP_BIND_ADDR=:8000
+      - GRPC_DIAL_ADDR=echo-grpc-server:9000
     ports:
       - 8000:8000
     networks:
@@ -43,7 +43,7 @@ services:
       dockerfile: cmd/raspi-grpc-server/Dockerfile
       target: raspi-grpc-server
     environment:
-      - GRPC_BIND_ADDR=":9001"
+      - GRPC_BIND_ADDR=:9001
     ports:
       - 9001:9001
     networks:
@@ -56,8 +56,8 @@ services:
       dockerfile: cmd/raspi-gateway-server/Dockerfile
       target: raspi-gateway-server
     environment:
-      - HTTP_BIND_ADDR=":8001"
-      - GRPC_DIAL_ADDR="raspi-grpc-server:9001"
+      - HTTP_BIND_ADDR=:8001
+      - GRPC_DIAL_ADDR=raspi-grpc-server:9001
     ports:
       - 8001:8001
     networks:

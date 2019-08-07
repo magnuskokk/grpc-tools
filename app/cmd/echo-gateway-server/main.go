@@ -6,6 +6,7 @@ import (
 	"app/idl/echo/echov1"
 	"app/pkg/server"
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"sync"
@@ -39,6 +40,8 @@ func main() {
 			Register:  echov1.RegisterEchoAPIHandlerFromEndpoint,
 		})
 	}()
+
+	fmt.Println("Running echo gateway server at", os.Getenv("HTTP_BIND_ADDR"))
 
 	<-sigs
 }

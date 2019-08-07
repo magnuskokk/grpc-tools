@@ -1,37 +1,20 @@
-# This file is the cmd/generator's input for generating go backend servers
+# This file is the cmd/tools/generator's input for generating go backend servers
 echo:
   version: v1
   grpc:
-    name: echo-grpc-server
+    bin: echo-grpc-server
     register: RegisterEchoAPIServer
     implementor: echo.API
   gateway:
-    name: echo-gateway-server
+    bin: echo-gateway-server
     register: RegisterEchoAPIHandlerFromEndpoint
-  docker-compose:
-    services:
-      echo-grpc-server:
-        image: grpc-tools/echo-grpc-server
-        build: 
-          context: ./app
-          dockerfile: cmd/echo-grpc-server/Dockerfile
-          target: echo
-        environment:
-          - GRPC_BIND_ADDR=":9000"
-        ports:
-          - 9000:9000
-        networks:
-          - back-tier
-
-
-
 
 raspi:
   version: v1
   grpc:
-    service: raspi-grpc-server
+    bin: raspi-grpc-server
     register:  RegisterRaspiAPIServer
     implementor: raspi.API
   gateway:
-    service: raspi-gateway-server
+    bin: raspi-gateway-server
     register: RegisterRaspiAPIHandlerFromEndpoint
