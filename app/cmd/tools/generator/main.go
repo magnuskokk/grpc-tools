@@ -196,7 +196,7 @@ func renderGatewayServer(serviceName string, conf service) {
 func main() {
 	// Load up configuration.
 	viper.AddConfigPath("./")
-	viper.SetConfigName("services")
+	viper.SetConfigName("servers")
 
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalln("Error reading conf", err)

@@ -42,11 +42,11 @@ The environment is currently simply a task runner and a golang docker image with
 * `$ tusk env.build` to build the development environment images.
 
 ## Project layout
-All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
-
-A Typescript client is also generated into `./frontend/generated` and swagger doc jsons into `./swagger`.
-
-Servers are defined in `docker-compose.yml` and `app/cmd/{name}-server`. The implementations are in `app/api/{name}`
+* All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
+* Implementations of services are in `./app/api/{name}`.
+* Servers are defined in `./app/servers.yml` and are generated into `./app/cmd/{name}-{type}-server` where type is either `grpc` or `gateway`.
+* Swagger docs are generated into `./swagger/idl/{name}/{name}{version}`.
+* Typescript client is generated into `./frontend/generated` (this needs work).
 
 Now that you have the environment loaded, you can run some commands. There are two example services `raspi` and `echo`.
 
