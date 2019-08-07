@@ -44,7 +44,7 @@ The environment is currently simply a task runner and a golang docker image with
 ## Project layout
 * All proto services are defined in `./idl/{name}/{name}{version}`. The generated go package for each service is `app/idl/{name}/{name}{version}`.
 * Implementations of services are in `./app/api/{name}`.
-* Servers are defined in `./app/servers.yml` and are generated into `./app/cmd/{name}-{type}-server` where type is either `grpc` or `gateway`.
+* Servers for all services are defined in `./app/servers.yml` and are generated into `./app/cmd/{name}-{type}-server` where type is either `grpc` or `gateway`.
 * Swagger docs are generated into `./swagger/idl/{name}/{name}{version}`.
 * Typescript client is generated into `./frontend/generated` (this needs work).
 
