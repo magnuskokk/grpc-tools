@@ -74,7 +74,7 @@ tasks:
         golocal
 
   go.install:
-    usage: Install packages in ./app/cmd to $GOPATH/bin.
+    usage: Install app binaries to $GOPATH/bin.
     args:
       package:
         usage: Go package to install.
