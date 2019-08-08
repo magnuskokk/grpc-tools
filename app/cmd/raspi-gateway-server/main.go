@@ -28,7 +28,6 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
 	// HTTP endpoint
 	wg.Add(1)
 	go func() {

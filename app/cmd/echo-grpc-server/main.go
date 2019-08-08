@@ -29,7 +29,6 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
 	// gRPC endpoint
 	wg.Add(1)
 	go func() {

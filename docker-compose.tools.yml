@@ -19,6 +19,7 @@ services:
     tty: yes
     volumes: 
       - ./app:/app
+      - ./idl:/idl
       - ./.direnv:/go
 
   gobuild:
