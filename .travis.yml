@@ -1,9 +1,22 @@
 language: go
-services:
-  - docker
+env:
+  - DEP_VERSION="0.4.1"
+
+go_import_path: github.com/magnuskokk/grpc-tools
+
+before_install:
+  - mkdir -p ./.direnv
+  - GOPATH=$(pwd)/.direnv
+
+before_script:
+  - GO_FILES=$(find ./app -type f -iname *.go | grep -v /vendor/) # All the .go files, excluding vendor/
+  - curl -sL https://git.io/tusk | bash -s -- -b . latest
+
 script:
-  - mkdir -p .direnv
-  - curl -sL https://git.io/tusk | bash -s -- -b .direnv/bin latest
+  - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
+  - go vet ./...                             # go vet is the official Go static analyzer
+  - megacheck ./...                          # "go vet on steroids" + linter
+  - golint -set_exit_status $(go list ./...) # one last linter
   - tusk env.build
   - tusk go.test
   - tusk stack.build
