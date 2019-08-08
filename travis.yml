@@ -1,0 +1,8 @@
+language: go
+services:
+  - docker
+script:
+  - sh install-tusk.sh
+  - tusk env.build
+  - tusk go.test
+  - tusk stack.build
