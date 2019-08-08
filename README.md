@@ -1,5 +1,7 @@
 # Dockerized Development Environment and Tools for full-stack gRPC service generation.
 
+[![Build Status](https://travis-ci.com/magnuskokk/grpc-tools.svg?branch=master)](https://travis-ci.com/magnuskokk/grpc-tools)
+
 This project aims to set up an opinionated environment for protobuf based web development, mainly to generate and prototype remote monitoring and control panel systems for abstract devices.
 
 ## Ideas
