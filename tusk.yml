@@ -106,6 +106,15 @@ tasks:
       - command: docker-compose -f docker-compose.tools.yml up -d golocal
       - command: docker-compose -f docker-compose.tools.yml exec golocal go test -run=xxx -bench=. ${package}
 
+  go.vet:
+    usage: Run go vet
+    args:
+      package:
+        usage: Go package to vet.
+    run:
+      - command: docker-compose -f docker-compose.tools.yml up -d golocal
+      - command: docker-compose -f docker-compose.tools.yml exec golocal go vet ${package}
+
   go.install.tools:
     usage: Install tools and dependencies necessary for code generation.
     run:
@@ -164,7 +173,7 @@ tasks:
   stack.build:
     usage: Build the whole stack.
     run:
-      - command: docker-compose -f docker-compose.tools.yml build gobuild
+      - command: docker-compose -f docker-compose.tools.yml build gobuild 
       - command: >
           docker-compose build
           --force-rm

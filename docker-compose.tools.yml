@@ -20,7 +20,7 @@ services:
     volumes: 
       - ./app:/app
       - ./idl:/idl
-      - ./.direnv:/go
+      - ${GOPATH}:/go
 
   gobuild:
     image: grpc-tools/gobuild
@@ -33,4 +33,4 @@ services:
     volumes:
       - ./:/work
       - /work/.direnv
-      - ./.direnv:/direnv
+      - ${GOPATH}:/go

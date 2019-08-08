@@ -1,8 +1,12 @@
 # Used in Travis CI.
-.PHONY: all
-all:
+.PHONY: build
+build:
 	./tusk stack.build
+
+.PHONY: vet
+vet:
+	./tusk go.vet ./...
 
 .PHONY: test
 test:
-	./tusk go.test
+	./tusk go.test ./...

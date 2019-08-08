@@ -8,9 +8,9 @@ before_script:
 
 script:
   - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
-  - cd ./app
-  - go vet ./...                             # go vet is the official Go static analyzer
+  - cd ./app                          # go vet is the official Go static analyzer
   - cd ..
   - ./tusk env.build
-  - make
+  - make vet
   - make test
+  - make build

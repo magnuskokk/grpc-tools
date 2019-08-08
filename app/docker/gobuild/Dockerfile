@@ -3,5 +3,5 @@ ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 
 WORKDIR /build
-COPY . .
+COPY . /build
 RUN go mod download
