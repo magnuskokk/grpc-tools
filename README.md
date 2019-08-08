@@ -48,7 +48,9 @@ The environment is currently simply a task runner and a golang docker image with
 * Swagger docs are generated into `./swagger/idl/{name}/{name}{version}`.
 * Typescript client is generated into `./frontend/generated` (this needs work).
 
-Now that you have the environment loaded, you can run some commands. There are two example services `raspi` and `echo`.
+Creating new services is just a matter of creating a `.proto` file, running generators, implementing the package under `api` and creating an entry in `docker-compose.yml` so it can run.
+
+There are two example services `raspi` and `echo`.
 
 ## List all tasks
 * `$ tusk`
