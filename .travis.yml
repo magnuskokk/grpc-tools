@@ -1,7 +1,4 @@
 language: go
-env:
-  - DEP_VERSION="0.4.1"
-
 go_import_path: github.com/magnuskokk/grpc-tools
 
 before_install:
