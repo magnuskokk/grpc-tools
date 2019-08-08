@@ -1,9 +1,5 @@
 language: go
 
-before_install:
-  - mkdir -p ./.direnv
-  - GOPATH=$(pwd)/.direnv
-
 before_script:
   - GO_FILES=$(find ./app -type f -iname *.go | grep -v /vendor/) # All the .go files, excluding vendor/
   - curl -sL https://git.io/tusk | bash -s -- -b . latest
@@ -12,9 +8,7 @@ script:
   - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
   - cd ./app
   - go vet ./...                             # go vet is the official Go static analyzer
-  - megacheck ./...                          # "go vet on steroids" + linter
-  - golint -set_exit_status $(go list ./...) # one last linter
   - cd ..
-  - tusk env.build
+  - ./tusk env.build
   - make
   - make test
