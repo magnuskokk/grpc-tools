@@ -1,4 +1,6 @@
 language: go
+env:
+  - GO111MODULE=on
 
 before_script:
   - GO_FILES=$(find ./app -type f -iname *.go | grep -v /vendor/) # All the .go files, excluding vendor/
