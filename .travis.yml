@@ -1,7 +1,9 @@
+language: go
 services:
   - docker
 script:
-  - sh install-tusk.sh
+  - mkdir -p .direnv
+  - curl -sL https://git.io/tusk | bash -s -- -b .direnv/bin latest
   - tusk env.build
   - tusk go.test
   - tusk stack.build
