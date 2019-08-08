@@ -15,5 +15,5 @@ script:
   - megacheck ./...                          # "go vet on steroids" + linter
   - golint -set_exit_status $(go list ./...) # one last linter
   - tusk env.build
-  - tusk go.test
-  - tusk stack.build
+  - make
+  - make test
