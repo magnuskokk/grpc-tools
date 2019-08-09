@@ -164,10 +164,13 @@ tasks:
       - task: gen.servers.clean
 
   gen.all:
-    usage: Run all generators. (Must have run gen.install.tools first).
+    usage: Run all generators. (Must have run go.install.tools first).
     run:
       - task: gen.protoc
-      - command: tusk go.generate ./...
+      - task:
+          name: go.generate
+          args:
+            - ./...
       - task: gen.servers
 
   stack.build:

@@ -66,7 +66,7 @@ Tasks:
    docker.prune.system      WARNING! Prunes the whole system.
    env.build                Build containers for dev tools.
    env.clean                Reset any environment in this directory.
-   gen.all                  Run all generators. (Must have run gen.install.tools first).
+   gen.all                  Run all generators. (Must have run go.install.tools first).
    gen.clean                Remove ALL generated files and directories.
    gen.protoc               Generate gRPC server, client, gateway, typescript and swagger for all services.
    gen.protoc.clean         Clean all protoc generated files.

@@ -7,9 +7,7 @@ before_script:
   - curl -sL https://git.io/tusk | bash -s -- -b . latest
 
 script:
-  - test -z $(gofmt -s -l $GO_FILES)         # Fail if a .go file hasn't been formatted with gofmt
-  - cd ./app                          # go vet is the official Go static analyzer
-  - cd ..
+  - test -z $(gofmt -s -l $GO_FILES) # Fail if a .go file hasn't been formatted with gofmt
   - ./tusk env.build
   - make vet
   - make test
