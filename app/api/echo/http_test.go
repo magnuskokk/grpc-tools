@@ -51,7 +51,7 @@ var _ = Describe("HTTP server and client for echo service", func() {
 		}
 
 		var err error
-		testServer, err = server.NewGatewayTestServer(ctx, &server.GatewayOptions{
+		testServer, err = server.NewGatewayTestServer(ctx, server.GatewayOptions{
 			ServeAddr: "bufnet",
 			DialOpts:  dialOpts,
 			Register:  RegisterEchoAPIHandlerFromEndpoint,

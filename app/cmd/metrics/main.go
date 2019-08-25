@@ -1,9 +1,7 @@
-// DO NOT EDIT. This file is generated.
-
 package main
 
 import (
-	"app/idl/raspi/raspiv1"
+	"app/pkg/metrics"
 	"app/pkg/server"
 	"context"
 	"fmt"
@@ -11,8 +9,6 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
-
-	"google.golang.org/grpc"
 )
 
 var sigs chan os.Signal
@@ -29,19 +25,17 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// HTTP endpoint
+	// gRPC endpoint
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		server.RunGatewayServer(ctx, server.GatewayOptions{
+		server.RunHTTPServer(ctx, server.HTTPOptions{
 			ServeAddr: os.Getenv("HTTP_BIND_ADDR"),
-			GRPCAddr:  os.Getenv("GRPC_DIAL_ADDR"),
-			DialOpts:  []grpc.DialOption{grpc.WithInsecure()},
-			Register:  raspiv1.RegisterRaspiAPIHandlerFromEndpoint,
+			Handler:   metrics.NewRouter(),
 		})
 	}()
 
-	fmt.Println("Running raspi gateway server at", os.Getenv("HTTP_BIND_ADDR"))
+	fmt.Println("Running metrics server at", os.Getenv("HTTP_BIND_ADDR"))
 
 	<-sigs
 }

@@ -15,7 +15,7 @@ type GRPCOptions struct {
 }
 
 // RunGRPCServer runs any service.
-func RunGRPCServer(ctx context.Context, opts *GRPCOptions) {
+func RunGRPCServer(ctx context.Context, opts GRPCOptions) {
 	lis, err := net.Listen("tcp", opts.ServeAddr)
 	if err != nil {
 		log.Fatal(err)
@@ -54,7 +54,7 @@ type ClientOptions struct {
 
 // NewGRPCClient returns a gRPC test client for any service.
 // Closes the connection when context is canceled.
-func NewGRPCClient(opts *ClientOptions) (interface{}, error) {
+func NewGRPCClient(opts ClientOptions) (interface{}, error) {
 	conn, err := grpc.DialContext(
 		opts.Ctx,
 		opts.Addr,

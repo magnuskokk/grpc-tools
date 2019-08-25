@@ -63,18 +63,18 @@ services:
     networks:
       - back-tier
 
-#  metrics-server:
-#    image: grpc-tools/metrics-server
-##    build:
-#     context: ./app
-#      dockerfile: cmd/metrics-server/Dockerfile
-#      target: metrics-server
-#    environment:
-#      - HTTP_BIND_ADDR=":8002"
-#    ports:
-#      - 8002:8002
-#    networks:
-#      - back-tier
+  # metrics:
+  #   image: grpc-tools/metrics
+  #   build:
+  #     context: ./app
+  #     dockerfile: cmd/metrics/Dockerfile
+  #     target: metrics
+  #   environment:
+  #     - HTTP_BIND_ADDR=:8002
+  #   ports:
+  #     - 8002:8002
+  #   networks:
+  #     - back-tier
 
   echo-swagger:
     image: swaggerapi/swagger-ui

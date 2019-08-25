@@ -42,8 +42,8 @@ var (
 		})
 )
 
-// InitHandler starts the prometheus daemon and returns a handler.
-func InitHandler() http.Handler {
+// NewRouter returns a handler for metrics.
+func NewRouter() http.Handler {
 	rand.Seed(time.Now().Unix())
 
 	router := chi.NewRouter()
@@ -57,6 +57,7 @@ func InitHandler() http.Handler {
 	prometheus.MustRegister(histogram)
 	prometheus.MustRegister(summary)
 
+	// TODO
 	go func() {
 		for {
 			counter.Add(rand.Float64() * 5)

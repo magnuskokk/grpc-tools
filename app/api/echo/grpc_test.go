@@ -42,7 +42,7 @@ var _ = Describe("gRPC server and client for echo service", func() {
 		newClient := func(c *grpc.ClientConn) interface{} {
 			return NewEchoAPIClient(c)
 		}
-		cl, err := server.NewGRPCClient(&server.ClientOptions{
+		cl, err := server.NewGRPCClient(server.ClientOptions{
 			Ctx:           ctx,
 			Addr:          "bufnet",
 			Dialer:        buf.DialContext,
