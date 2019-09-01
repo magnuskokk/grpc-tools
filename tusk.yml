@@ -15,10 +15,6 @@ options:
     description: Same as user name.
     default:
       command: id -un
-  devroot:
-    usage: This directory.
-    default:
-      command: pwd
 
 tasks:
   docker.down:
@@ -153,7 +149,7 @@ tasks:
     usage: Parse proto API services from ./idl and generate server main files and Dockerfiles.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d golocal
-      - command: docker-compose -f docker-compose.tools.yml exec -e DEVROOT=${devroot} golocal sh cmd/generate-servergenerate.sh
+      - command: docker-compose -f docker-compose.tools.yml exec golocal sh cmd/generate-servers/generate.sh
 
   gen.servers.clean:
     usage: Clean generated servers from ./app/cmd

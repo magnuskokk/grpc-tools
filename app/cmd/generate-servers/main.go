@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"os"
+	"path"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -18,7 +20,7 @@ var (
 
 func init() {
 	flag.StringVar(&serviceName, "servicename", "", "Name of service to generate servers for")
-	flag.BoolVar(&generateGateway, "grpc", true, "Generate additional HTTP gateway")
+	flag.BoolVar(&generateGateway, "gateway", true, "Generate additional HTTP gateway")
 
 	flag.Parse()
 	if serviceName == "" {
@@ -54,6 +56,7 @@ func genGRPC() {
 
 	grpcTpl := tplPath + "/grpc-server.go.tpl"
 	grpcOut := outputPath + "/" + data.Bin + "/main.go"
+
 	mustRenderTemplate(grpcOut, grpcTpl, data)
 
 	dockerfileTpl := tplPath + "/Dockerfile.tpl"
@@ -79,9 +82,13 @@ func genGateway() {
 }
 
 func mustRenderTemplate(outputPath string, inputPath string, data tplData) {
-	tpl := template.Must(template.New("").ParseFiles(inputPath))
+	dir := filepath.Dir(outputPath)
+	os.MkdirAll(dir, os.ModePerm)
 
-	f, err := os.OpenFile(outputPath, os.O_CREATE, 0777)
+	tplName := path.Base(inputPath)
+	tpl := template.Must(template.New(tplName).ParseFiles(inputPath))
+
+	f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
