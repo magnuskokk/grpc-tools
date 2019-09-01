@@ -88,7 +88,7 @@ func mustRenderTemplate(outputPath string, inputPath string, data tplData) {
 	tplName := path.Base(inputPath)
 	tpl := template.Must(template.New(tplName).ParseFiles(inputPath))
 
-	f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, os.ModePerm)
+	f, err := os.OpenFile(outputPath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)
 	}
