@@ -15,6 +15,10 @@ options:
     description: Same as user name.
     default:
       command: id -un
+  devroot:
+    usage: This directory.
+    default:
+      command: pwd
 
 tasks:
   docker.down:
@@ -149,12 +153,13 @@ tasks:
     usage: Parse proto API services from ./idl and generate server main files and Dockerfiles.
     run:
       - command: docker-compose -f docker-compose.tools.yml up -d golocal
-      - command: docker-compose -f docker-compose.tools.yml exec golocal sh generate.sh
+      - command: docker-compose -f docker-compose.tools.yml exec -e DEVROOT=${devroot} golocal sh cmd/generate-servergenerate.sh
 
   gen.servers.clean:
     usage: Clean generated servers from ./app/cmd
     run:
-      - command: find ./app/cmd -type d -iname "*-server" -exec rm -rf {} +
+      - command: find ./app/cmd -type d -iname "*grpc-server" -exec rm -rf {} +
+      - command: find ./app/cmd -type d -iname "*gateway-server" -exec rm -rf {} +
 
   gen.clean:
     usage: Remove ALL generated files and directories.
@@ -186,3 +191,4 @@ tasks:
           raspi-grpc-server
           raspi-gateway-server
           #metrics-server
+
